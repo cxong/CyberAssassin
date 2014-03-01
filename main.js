@@ -5,24 +5,33 @@ var player;
 var buildings;
 var chips;
 var cursors;
+var music;
 
 function preload () {
+  game.load.image('bgimage', 'images/bg.jpg');
   game.load.image('logo', 'phaser.png');
   game.load.image('building', 'images/05muronero.jpg');
   game.load.image('chip', 'images/chip.png');
   game.load.spritesheet('player', 'images/dude.png', 32, 48);
+  
+  game.load.audio('bgaudio', ['sounds/bg.ogg']);
   
   cursors = game.input.keyboard.createCursorKeys();
 }
 
 function create () {
   game.world.setBounds(0, 0, 1400, groundY);
+  var bgSprite = game.add.sprite(0, 0, 'bgimage');
+  bgSprite.fixedToCamera = true;
+  
+  music = game.add.audio('bgaudio');
+  music.play();
 
   var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
   logo.anchor.setTo(0.5, 0.5);
   
   buildings = game.add.group();
-  buildings.add(new Building(game, 500, 300, 4600, groundY).sprite);
+  buildings.add(new Building(game, 400, 300, 4600, groundY).sprite);
   buildings.add(new Building(game, -200, 400, 4750, groundY).sprite);
   
   // The player and its settings
@@ -49,6 +58,10 @@ function update() {
   game.physics.overlap(player.sprite, chips, collectChip, null, this);
   
   player.handleInput(cursors);
+
+  // Manual follow because Phaser has a jitter bug
+  game.camera.x = player.sprite.x - game.width / 2;
+  game.camera.y = player.sprite.y - game.height / 2;
 }
 
 function collectChip(player, chip) {
