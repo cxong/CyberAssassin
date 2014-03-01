@@ -1,7 +1,7 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 30; // default, no-air-resistance gravity
+var groundY = 5000;
 var player;
-var playerSpeed = 250;
 var buildings;
 var chips;
 var cursors;
@@ -16,18 +16,14 @@ function preload () {
 }
 
 function create () {
-  game.world.setBounds(0, 0, 1400, 1400);
+  game.world.setBounds(0, 0, 1400, groundY);
 
   var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
   logo.anchor.setTo(0.5, 0.5);
   
   buildings = game.add.group();
-  var ledge = buildings.create(500, 400, 'building');
-  // This stops it from falling away when you jump on it
-  ledge.body.immovable = true;
-
-  ledge = buildings.create(-200, 250, 'building');
-  ledge.body.immovable = true;
+  buildings.add(new Building(game, 500, 300, 4600, groundY).sprite);
+  buildings.add(new Building(game, -200, 400, 4750, groundY).sprite);
   
   // The player and its settings
   player = new Player(game, gravity);
