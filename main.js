@@ -28,13 +28,7 @@ function create () {
   ledge.body.immovable = true;
   
   // The player and its settings
-  player = game.add.sprite(32, 150, 'player');
-  //  Player physics properties
-  player.body.gravity.y = gravity;
-  player.body.collideWorldBounds = true;
-  //  Our two animations, walking left and right.
-  player.animations.add('left', [0, 1, 2, 3], 10, true);
-  player.animations.add('right', [5, 6, 7, 8], 10, true);
+  player = new Player(game, gravity);
   
   // Collectibles
   chips = game.add.group();
@@ -51,42 +45,12 @@ function create () {
 }
 
 function update() {
-  game.physics.collide(player, buildings);
+  game.physics.collide(player.sprite, buildings);
   game.physics.collide(chips, buildings);
   // Check for player pickups
-  game.physics.overlap(player, chips, collectChip, null, this);
+  game.physics.overlap(player.sprite, chips, collectChip, null, this);
   
-  // Handle input
-  //  Reset the players velocity (movement)
-  player.body.velocity.x = 0;
-
-  if (cursors.left.isDown)
-  {
-    //  Move to the left
-    player.body.velocity.x = -playerSpeed;
-
-    player.animations.play('left');
-  }
-  else if (cursors.right.isDown)
-  {
-    //  Move to the right
-    player.body.velocity.x = playerSpeed;
-
-    player.animations.play('right');
-  }
-  else
-  {
-    //  Stand still
-    player.animations.stop();
-
-    player.frame = 4;
-  }
-
-  //  Allow the player to jump if they are touching the ground.
-  if (cursors.up.isDown && player.body.touching.down)
-  {
-    player.body.velocity.y = player.body.gravity.y * -20;
-  }
+  player.handleInput(cursors);
 }
 
 function collectChip(player, chip) {
