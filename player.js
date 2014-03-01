@@ -7,6 +7,8 @@ var Player = function(game, gravity) {
   //  Our two animations, walking left and right.
   this.sprite.animations.add('left', [0, 1, 2, 3], 10, true);
   this.sprite.animations.add('right', [5, 6, 7, 8], 10, true);
+  
+  game.camera.follow(this.sprite);
 
   // Move left, right, jump on ground
   // When jumping, cannot change x velocity

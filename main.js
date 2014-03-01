@@ -16,6 +16,8 @@ function preload () {
 }
 
 function create () {
+  game.world.setBounds(0, 0, 1400, 1400);
+
   var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
   logo.anchor.setTo(0.5, 0.5);
   
