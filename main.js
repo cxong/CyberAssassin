@@ -20,18 +20,18 @@ function preload () {
 }
 
 function create () {
-  game.world.setBounds(0, 0, 1400, groundY);
+  game.world.setBounds(0, 0, 2000, groundY);
   bgSprite = game.add.sprite(0, 0, 'bgimage');
   bgSprite.scale.setTo(3, 3);
   
   music = game.add.audio('bgaudio');
   music.play();
   
-  buildings = game.add.group();
-  buildings.add(new Building(game, -200, 400, 4750, groundY).sprite);
-  buildings.add(new Building(game, 400, 300, 4600, groundY).sprite);
-  buildings.add(new Building(game, 800, 350, 4400, groundY).sprite);
-  buildings.add(new Building(game, 1250, 500, 4000, groundY).sprite);
+  buildings = new Buildings(game, groundY);
+  buildings.add(200, 4750);
+  buildings.add(300, 4600);
+  buildings.add(350, 4400);
+  buildings.add(500, 4000);
   
   // The player and its settings
   player = new Player(game, gravity);
@@ -51,8 +51,8 @@ function create () {
 }
 
 function update() {
-  game.physics.collide(player.sprite, buildings);
-  game.physics.collide(chips, buildings);
+  game.physics.collide(player.sprite, buildings.group);
+  game.physics.collide(chips, buildings.group);
   // Check for player pickups
   game.physics.overlap(player.sprite, chips, collectChip, null, this);
   
