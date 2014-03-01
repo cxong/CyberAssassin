@@ -1,6 +1,7 @@
 var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 30; // default, no-air-resistance gravity
-var groundY = 5000;
+var groundY = 10000;
+var camera;
 var bgSprite;
 var player;
 var buildings;
@@ -14,7 +15,7 @@ function preload () {
   game.load.image('chip', 'images/chip.png');
   game.load.spritesheet('player', 'images/dude.png', 32, 48);
   
-  game.load.audio('bgaudio', ['sounds/bg.ogg']);
+  game.load.audio('bgaudio', ['sounds/bg.mp3']);
   
   cursors = game.input.keyboard.createCursorKeys();
 }
@@ -28,13 +29,15 @@ function create () {
   music.play();
   
   buildings = new Buildings(game, groundY);
-  buildings.add(200, 4750);
-  buildings.add(300, 4600);
-  buildings.add(350, 4400);
-  buildings.add(500, 4000);
+  buildings.add(200, 9750);
+  buildings.add(300, 9600);
+  buildings.add(350, 9400);
+  buildings.add(500, 9000);
   
   // The player and its settings
   player = new Player(game, gravity);
+  
+  camera = new Camera(game, player);
   
   // Collectibles
   chips = game.add.group();
@@ -51,20 +54,22 @@ function create () {
 }
 
 function update() {
-  game.physics.collide(player.sprite, buildings.group);
+  game.physics.collide(player.sprite, buildings.group, collideHandler);
   game.physics.collide(chips, buildings.group);
   // Check for player pickups
   game.physics.overlap(player.sprite, chips, collectChip, null, this);
   
   player.handleInput(cursors);
 
-  // Manual follow because Phaser has a jitter bug
-  game.camera.x = player.sprite.x - game.width / 2;
-  game.camera.y = player.sprite.y - game.height / 2;
+  camera.update();
   
   // Parallax
   bgSprite.x = game.camera.x * 0.9;
-  bgSprite.y = game.camera.y * 0.9;
+  bgSprite.y = game.camera.y * 0.97;
+}
+
+function collideHandler(player, building) {
+  camera.playerCollide(building);
 }
 
 function collectChip(player, chip) {

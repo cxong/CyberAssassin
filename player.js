@@ -38,5 +38,14 @@ var Player = function(game, gravity) {
        this.sprite.body.velocity.y = this.sprite.body.gravity.y * -20;
       }
     }
+    
+    // Cap Y velocity so we don't fall so fast
+    this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, 600);
+    
+    if (this.sprite.body.touching.left || this.sprite.body.touching.right) {
+      // sliding against building
+      this.sprite.animations.stop();
+      this.sprite.frame = 4;
+    }
   };
 };
