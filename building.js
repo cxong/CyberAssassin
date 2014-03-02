@@ -1,11 +1,13 @@
-var Level = function(game, x, y, w) {
+var Level = function(game, x, y, w, glassGroup) {
   var h = 100;
   var windowWidth = 16;
   this.windowLeft = game.add.tileSprite(x, y, windowWidth, h, 'glass');
   this.windowRight = game.add.tileSprite(x + w - windowWidth, y, windowWidth, h, 'glass');
+  glassGroup.add(this.windowLeft);
+  glassGroup.add(this.windowRight);
 };
 
-var Building = function(game, x, w, h, groundY) {
+var Building = function(game, x, w, h, groundY, glassGroup) {
   this.sprite = game.add.tileSprite(x, groundY - h, w, h, 'building');
   this.sprite.body.width = w;
   this.sprite.body.height = h;
@@ -17,16 +19,19 @@ var Building = function(game, x, w, h, groundY) {
   this.levels = [];
   var levelInterval = 300;
   for (var levelY = groundY - h + levelInterval; levelY < groundY; levelY += levelInterval) {
-    this.levels.push(new Level(game, x, levelY, w));
+    var level = new Level(game, x, levelY, w, glassGroup);
+    this.levels.push(level);
   }
 };
 
 var Buildings = function(game, groundY) {
   this.group = game.add.group();
+  this.glassGroup = game.add.group();
+
   var buildingGap = 200;
   var lastBuildingX = -buildingGap;
   this.add = function(w, h) {
-    var building = new Building(game, lastBuildingX + buildingGap, w, h, groundY);
+    var building = new Building(game, lastBuildingX + buildingGap, w, h, groundY, this.glassGroup);
     this.group.add(building.sprite);
     lastBuildingX += buildingGap + w;
   };

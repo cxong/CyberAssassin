@@ -8,6 +8,7 @@ var buildings;
 var chips;
 var cursors;
 var music;
+var glassSound;
 
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
@@ -15,6 +16,8 @@ function preload () {
   game.load.image('chip', 'images/chip.png');
   game.load.image('glass', 'images/glass.png');
   game.load.spritesheet('player', 'images/dude.png', 32, 48);
+  
+  game.load.audio('glass', ['sounds/glass.ogg']);
   
   game.load.audio('bgaudio', ['sounds/bg.mp3']);
   
@@ -28,6 +31,7 @@ function create () {
   
   music = game.add.audio('bgaudio');
   music.play();
+  glassSound = game.add.audio('glass');
   
   buildings = new Buildings(game, groundY);
   buildings.add(200, 9750);
@@ -55,6 +59,7 @@ function create () {
 }
 
 function update() {
+  game.physics.overlap(player.sprite, buildings.glassGroup, collideGlass);
   game.physics.collide(player.sprite, buildings.group, collideHandler);
   game.physics.collide(chips, buildings.group);
   // Check for player pickups
@@ -67,6 +72,10 @@ function update() {
   // Parallax
   bgSprite.x = game.camera.x * 0.9;
   bgSprite.y = game.camera.y * 0.97;
+}
+
+function collideGlass(player, glass) {
+  glassSound.play();
 }
 
 function collideHandler(player, building) {
