@@ -3,19 +3,21 @@ var Player = function(game, gravity) {
   // constants
   
   // Speed for moving left/right
-  var speed = 250;
+  var speed = 200;
   
   // Multiplier of gravity of jump force
-  var jumpMultiplier = -20;
+  var jumpMultiplier = -15;
   
   // Speed for pushing off walls
   var pushForce = 500;
+  // Also jump up a little when pushing off walls
+  var pushJumpMultiplier = -10;
   
   // Maximum speed in freefall
-  var maxYVel = 800;
+  var maxYVel = 600;
   
   // Maximum speed when sliding against wall
-  var maxSlideVel = 600;
+  var maxSlideVel = 400;
   
   
   this.sprite = game.add.sprite(32, 150, 'player');
@@ -26,6 +28,11 @@ var Player = function(game, gravity) {
   this.sprite.animations.add('left', [0, 1, 2, 3], 10, true);
   this.sprite.animations.add('right', [5, 6, 7, 8], 10, true);
   this.touchState = {};
+  
+  // (h)orizontal or (v)ertical
+  // In horizontal mode, player walks along floors in building interiors
+  // In vertical mode, player pushes off sides of buildings
+  this.moveMode = 'v';
 
   // Move left, right, jump on ground
   // When jumping, cannot change x velocity
@@ -50,10 +57,12 @@ var Player = function(game, gravity) {
       // the opposite wall
       if (cursors.right.isDown && this.touchState.left) {
         this.sprite.body.velocity.x = pushForce;
+        this.sprite.body.velocity.y += pushJumpMultiplier * gravity;
         this.sprite.animations.play('right');
         this.touchState.left = false;
       } else if (cursors.left.isDown && this.touchState.right) {
         this.sprite.body.velocity.x = -pushForce;
+        this.sprite.body.velocity.y += pushJumpMultiplier * gravity;
         this.sprite.animations.play('left');
         this.touchState.right = false;
       }
