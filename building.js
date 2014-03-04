@@ -31,6 +31,15 @@ var Level = function(game, x, y, w, groups) {
   if (x + w < game.world.bounds.x + game.world.bounds.width) {
     this.windowRight = new Window(game, x + w - windowWidth, y, h, groups.glasses);
   }
+  
+  // Randomly add enemies in rooms
+  var numLocations = 5;
+  for (var i = 1; i < numLocations - 1; i++) {
+    if (Math.random() * 6 < 1) {
+      var enemyX = x + i * w / numLocations;
+      var enemy = new Enemy(game, enemyX, y + h);
+    }
+  }
 };
 
 var Building = function(game, x, w, h, groundY, groups) {

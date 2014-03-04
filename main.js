@@ -21,6 +21,7 @@ function preload () {
   game.load.image('glass', 'images/glass.png');
   
   game.load.spritesheet('player', 'images/dude.png', 32, 48);
+  game.load.spritesheet('enemy', 'images/enemy.png', 64, 64);
   
   game.load.audio('glass', ['sounds/glass.ogg']);
   
