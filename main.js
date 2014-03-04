@@ -5,6 +5,7 @@ var camera;
 var bgSprite;
 var player;
 var buildings;
+var enemies;
 var chips;
 var cursors;
 var music;
@@ -39,11 +40,13 @@ function create () {
   music.play();
   glassSound = game.add.audio('glass');
   
+  enemies = [];
+  
   buildings = new Buildings(game, groundY);
-  buildings.add(200, 9750);
-  buildings.add(300, 9600);
-  buildings.add(350, 9400);
-  buildings.add(500, 9000);
+  buildings.add(200, 9750, enemies);
+  buildings.add(300, 9600, enemies);
+  buildings.add(350, 9400, enemies);
+  buildings.add(500, 9000, enemies);
   
   // The player and its settings
   player = new Player(game, gravity);
@@ -84,6 +87,10 @@ function update() {
   player.handleInput(cursors);
 
   camera.update();
+  
+  for (var i = 0; i < enemies.length; i++) {
+    enemies[i].update(player);
+  }
   
   // Parallax
   bgSprite.x = game.camera.x * 0.9;
