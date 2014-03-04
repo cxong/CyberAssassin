@@ -59,20 +59,14 @@ var Building = function(game, x, w, h, groundY, groups, enemies) {
   }
 };
 
-var Buildings = function(game, groundY) {
-  this.group = game.add.group();
-  this.floorGroup = game.add.group();
-  this.roomGroup = game.add.group();
-  this.glassGroup = game.add.group();
+var Buildings = function(game, groundY, groups) {
 
   var buildingGap = 200;
   var lastBuildingX = -buildingGap;
   this.add = function(w, h, enemies) {
     var building = new Building(
-      game, lastBuildingX + buildingGap, w, h, groundY,
-      { glasses: this.glassGroup, floors: this.floorGroup, rooms: this.roomGroup },
-      enemies);
-    this.group.add(building.sprite);
+      game, lastBuildingX + buildingGap, w, h, groundY, groups, enemies);
+    groups.buildings.add(building.sprite);
     lastBuildingX += buildingGap + w;
   };
 };

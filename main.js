@@ -5,6 +5,11 @@ var camera;
 var bgSprite;
 var player;
 var buildings;
+
+// Groups
+// Create them ourselves because we need to control the Z order
+var groups;
+
 var enemies;
 var chips;
 var cursors;
@@ -23,8 +28,10 @@ function preload () {
   
   game.load.spritesheet('player', 'images/dude.png', 32, 48);
   game.load.spritesheet('enemy', 'images/enemy.png', 64, 64);
+  game.load.image('bullet', 'images/bullet.png');
   
   game.load.audio('glass', ['sounds/glass.ogg']);
+  game.load.audio('laser', ['sounds/laser.wav']);
   
   game.load.audio('bgaudio', ['sounds/bg.mp3']);
   
@@ -42,7 +49,15 @@ function create () {
   
   enemies = [];
   
-  buildings = new Buildings(game, groundY);
+  groups = {
+    buildings: game.add.group(),
+    floors: game.add.group(),
+    rooms: game.add.group(),
+    glasses: game.add.group(),
+    bullets: game.add.group()
+  };
+  
+  buildings = new Buildings(game, groundY, groups);
   buildings.add(200, 9750, enemies);
   buildings.add(300, 9600, enemies);
   buildings.add(350, 9400, enemies);
@@ -70,17 +85,17 @@ function create () {
 function update() {
   // Check if the player has entered a room, and modify move mode accordingly
   player.moveMode = 'v';
-  game.physics.overlap(player.sprite, buildings.roomGroup, overlapRoom);
+  game.physics.overlap(player.sprite, groups.rooms, overlapRoom);
   // Conditional collision logic based on the move "mode" for the player
   if (player.moveMode === 'h') {
     // Horizontal mode, detect floor collisions only
-    game.physics.collide(player.sprite, buildings.floorGroup);
+    game.physics.collide(player.sprite, groups.floors, collideFloor);
   } else if (player.moveMode === 'v') {
     // Vertical mode, detect building collisions
-    game.physics.collide(player.sprite, buildings.group, collideHandler);
+    game.physics.collide(player.sprite, groups.buildings, collideFloor);
   }
-  game.physics.overlap(player.sprite, buildings.glassGroup, collideGlass);
-  game.physics.collide(chips, buildings.group);
+  game.physics.overlap(player.sprite, groups.glasses, collideGlass);
+  game.physics.collide(chips, groups.buildings);
   // Check for player pickups
   game.physics.overlap(player.sprite, chips, collectChip, null, this);
   
@@ -88,8 +103,9 @@ function update() {
 
   camera.update();
   
-  for (var i = 0; i < enemies.length; i++) {
-    enemies[i].update(player);
+  var i;
+  for (i = 0; i < enemies.length; i++) {
+    enemies[i].update(game, player, groups.bullets);
   }
   
   // Parallax
@@ -106,8 +122,8 @@ function collideGlass(playerSprite, glass) {
   glass.kill();
 }
 
-function collideHandler(player, building) {
-  camera.playerCollide(building);
+function collideFloor(player, floor) {
+  camera.playerCollide(floor);
 }
 
 function collectChip(player, chip) {

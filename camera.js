@@ -22,7 +22,7 @@ var Camera = function(game, player) {
   this.playerCollide = function(building) {
     if (player.sprite.body.touching.down) {
       // Lock camera Y to the ground the player is standing on
-      this.dy = building.y - game.height / 2;
+      this.dy = player.sprite.body.y - game.height / 2;
       isFollowingPlayer = false;
     } else if (player.sprite.body.touching.left || player.sprite.body.touching.right) {
       // start looking below the player since he is falling
