@@ -28,6 +28,7 @@ function preload () {
   
   game.load.spritesheet('player', 'images/dude.png', 32, 48);
   game.load.spritesheet('enemy', 'images/enemy.png', 64, 64);
+  game.load.image('melee', 'images/melee.png');
   game.load.image('bullet', 'images/bullet.png');
   
   game.load.audio('glass', ['sounds/glass.ogg']);
@@ -44,6 +45,8 @@ function create () {
   bgSprite.scale.setTo(3, 3);
   
   music = game.add.audio('bgaudio');
+  music.volume = 0.5;
+  music.loop = true;
   music.play();
   glassSound = game.add.audio('glass');
   
@@ -99,15 +102,25 @@ function update() {
   // Check for player pickups
   game.physics.overlap(player.sprite, chips, collectChip, null, this);
   
-  player.handleInput(cursors);
+  player.handleInput(game, cursors);
 
   camera.update();
+  player.update();
   
-  var i;
-  for (i = 0; i < enemies.length; i++) {
-    enemies[i].update(game, player, groups.bullets);
+  for (var i = 0; i < enemies.length; i++) {
+    if (player.meleeSprite.alive) {
+      // Check if player has hit any enemies
+      game.physics.overlap(player.meleeSprite, enemies[i].sprite, hitEnemy);
+    }
+    if (!enemies[i].sprite.alive) {
+      enemies[i].sprite.destroy();
+      enemies.splice(i, 1);
+      i--;
+    } else {
+      enemies[i].update(game, player, groups.bullets);
+    }
   }
-  
+
   // Parallax
   bgSprite.x = game.camera.x * 0.9;
   bgSprite.y = game.camera.y * 0.97;
@@ -128,4 +141,8 @@ function collideFloor(player, floor) {
 
 function collectChip(player, chip) {
   chip.kill();
+}
+
+function hitEnemy(melee, enemy) {
+  enemy.damage(1);
 }

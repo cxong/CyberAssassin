@@ -33,10 +33,18 @@ var Player = function(game, gravity) {
   // In horizontal mode, player walks along floors in building interiors
   // In vertical mode, player pushes off sides of buildings
   this.moveMode = 'v';
+  
+  this.lastDir = 'left';
+  
+  // Melee attack sprite
+  // Normally inactive, activated using melee key
+  this.meleeSprite = game.add.sprite(0, 0, 'melee');
+  this.meleeSprite.anchor.setTo(0.5, 0.5);
+  this.meleeSprite.kill();
 
   // Move left, right, jump on ground
   // When jumping, cannot change x velocity
-  this.handleInput = function(cursors) {
+  this.handleInput = function(game, cursors) {
     // Update what touching state the player is in
     var newTouch = this.sprite.body.touching;
     if (newTouch.left || newTouch.right || newTouch.down) {
@@ -60,11 +68,13 @@ var Player = function(game, gravity) {
         this.sprite.body.velocity.y += pushJumpMultiplier * gravity;
         this.sprite.animations.play('right');
         this.touchState.left = false;
+        this.lastDir = 'right';
       } else if (cursors.left.isDown && this.touchState.right) {
         this.sprite.body.velocity.x = -pushForce;
         this.sprite.body.velocity.y += pushJumpMultiplier * gravity;
         this.sprite.animations.play('left');
         this.touchState.right = false;
+        this.lastDir = 'left';
       }
     } else if (newTouch.down) {
       this.sprite.body.velocity.x = 0;
@@ -72,10 +82,12 @@ var Player = function(game, gravity) {
         //  Move to the left
         this.sprite.body.velocity.x = -speed;
         this.sprite.animations.play('left');
+        this.lastDir = 'left';
       } else if (cursors.right.isDown) {
         //  Move to the right
         this.sprite.body.velocity.x = speed;
         this.sprite.animations.play('right');
+        this.lastDir = 'right';
       } else {
         //  Stand still
         this.sprite.animations.stop();
@@ -87,7 +99,29 @@ var Player = function(game, gravity) {
        this.sprite.body.velocity.y = this.sprite.body.gravity.y * jumpMultiplier;
       }
     }
-    
+
+    // Check for melee
+    if (game.input.keyboard.isDown(Phaser.Keyboard.Z)) {
+      this.melee();
+    } else {
+      this.meleeSprite.kill();
+    }
+  };
+  
+  this.melee = function() {
+    var pos = {
+      x: this.sprite.x + this.sprite.width / 2,
+      y: this.sprite.y + this.sprite.height / 2
+    };
+    if (this.lastDir === 'left') {
+      pos.x -= this.sprite.width / 2;
+    } else {
+      pos.x += this.sprite.width / 2;
+    }
+    this.meleeSprite.reset(pos.x, pos.y, 1);
+  };
+  
+  this.update = function() {
     // Cap Y velocity so we don't fall so fast
     this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, maxYVel);
   };
