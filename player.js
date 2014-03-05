@@ -64,20 +64,29 @@ var Player = function(game, gravity) {
       this.sprite.frame = 4;
       this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, maxSlideVel);
       
-      // Allow player to jump to left/right wall only if they were touching
-      // the opposite wall
-      if (cursors.right.isDown && this.touchState.left) {
-        this.sprite.body.velocity.x = pushForce;
-        this.sprite.body.velocity.y += pushJumpMultiplier * gravity;
-        this.sprite.animations.play('right');
-        this.touchState.left = false;
-        this.lastDir = 'right';
-      } else if (cursors.left.isDown && this.touchState.right) {
-        this.sprite.body.velocity.x = -pushForce;
-        this.sprite.body.velocity.y += pushJumpMultiplier * gravity;
-        this.sprite.animations.play('left');
-        this.touchState.right = false;
-        this.lastDir = 'left';
+      // Allow player to do two moves when touching a wall:
+      // - jump to left/right wall only if they were touching the opposite wall
+      // - nudge into the wall they are touching so they can enter rooms on their side
+      if (this.touchState.left) {
+        if (cursors.right.isDown) {
+          this.sprite.body.velocity.x = pushForce;
+          this.sprite.body.velocity.y += pushJumpMultiplier * gravity;
+          this.sprite.animations.play('right');
+          this.touchState.left = false;
+          this.lastDir = 'right';
+        } else if (cursors.left.isDown) {
+          this.sprite.body.velocity.x = -100;
+        }
+      } else if (this.touchState.right) {
+        if (cursors.left.isDown) {
+          this.sprite.body.velocity.x = -pushForce;
+          this.sprite.body.velocity.y += pushJumpMultiplier * gravity;
+          this.sprite.animations.play('left');
+          this.touchState.right = false;
+          this.lastDir = 'left';
+        } else if (cursors.right.isDown) {
+          this.sprite.body.velocity.x = 100;
+        }
       }
     } else if (newTouch.down) {
       this.sprite.body.velocity.x = 0;
