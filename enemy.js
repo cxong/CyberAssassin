@@ -54,6 +54,7 @@ var Enemy = function(game, x, y) {
             bullet.body.velocity.x *= -1;
             bullet.scale.x *= -1;
           }
+          bullet.outOfBoundsKill = true;
           bullets.add(bullet);
           var laserSound = game.add.audio('laser');
           laserSound.play();
