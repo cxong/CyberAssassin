@@ -15,6 +15,7 @@ var chips;
 var cursors;
 var music;
 var glassSound;
+var hitSound;
 
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
@@ -32,7 +33,9 @@ function preload () {
   game.load.image('bullet', 'images/bullet.png');
   
   game.load.audio('glass', ['sounds/glass.ogg']);
-  game.load.audio('laser', ['sounds/laser.wav']);
+  game.load.audio('laser', ['sounds/laser.ogg']);
+  game.load.audio('swish', ['sounds/swish.ogg']);
+  game.load.audio('clang', ['sounds/clang.ogg']);
   
   game.load.audio('bgaudio', ['sounds/bg.mp3']);
   
@@ -49,6 +52,7 @@ function create () {
   music.loop = true;
   music.play();
   glassSound = game.add.audio('glass');
+  hitSound = game.add.audio('clang');
   
   enemies = [];
   
@@ -145,4 +149,5 @@ function collectChip(player, chip) {
 
 function hitEnemy(melee, enemy) {
   enemy.damage(1);
+  hitSound.play();
 }

@@ -12,7 +12,7 @@ var Enemy = function(game, x, y) {
   
   // Countdown for shooting
   // At 0, shoots
-  var fireCounterStart = 100;
+  var fireCounterStart = 60;
   this.fireCounter = 0;
   
   this.update = function(game, player, bullets) {
@@ -45,7 +45,8 @@ var Enemy = function(game, x, y) {
         
         // Fire
         if (this.fireCounter <= 0) {
-          this.fireCounter = fireCounterStart;
+          // Add a random extra delay so adjacent enemies don't fire in unison
+          this.fireCounter = fireCounterStart + Math.random() * fireCounterStart * 0.5;
           // X offset so the bullet fires outside the player from a "muzzle"
           // Note that since we use scale -1 to flip the sprite, this also flips width
           var bullet = game.add.sprite(this.sprite.x - this.sprite.width, this.sprite.y - this.sprite.height / 2, 'bullet');
