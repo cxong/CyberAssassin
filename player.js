@@ -2,8 +2,17 @@ var Player = function(game, gravity) {
   
   // constants
   
-  // Speed for moving left/right
-  var speed = 200;
+  // Acceleration; player accelerates left/right
+  var accel = 10;
+  
+  // Deceleration; when no left/right input player decelerates at this rate
+  var decel = accel * 1.5;
+  
+  // Initial speed when at rest or moving in opposite direction
+  var minSpeed = 100;
+
+  // Max for moving left/right  
+  var maxSpeed = 400;
   
   // Multiplier of gravity of jump force
   var jumpMultiplier = -15;
@@ -23,6 +32,10 @@ var Player = function(game, gravity) {
   var hitYMultiplier = -10;
   var hitXVel = 200;
   
+  
+  // Note: need to track running speed manually because ground collisions
+  // slow the player down
+  this.speed = 0;
   
   this.sprite = game.add.sprite(32, 150, 'player');
   //  Player physics properties
@@ -63,6 +76,9 @@ var Player = function(game, gravity) {
     }
 
     if (this.touchState.left || this.touchState.right) {
+      // Cancel normal movement
+      this.speed = 0;
+
       // sliding against building
       this.sprite.animations.stop();
       this.sprite.frame = 4;
@@ -94,21 +110,41 @@ var Player = function(game, gravity) {
       }
     } else if (newTouch.down) {
       this.sprite.body.velocity.x = 0;
+      
+      var move = function(player, dir) {
+        var sign = (dir === 'left' ? -1 : 1);
+        // Initial speed
+        if (player.speed * sign <= 0 ||
+            Math.abs(player.speed) < minSpeed) {
+          player.speed = minSpeed * sign;
+        } else {
+          // Accelerate
+          player.speed += accel * sign;
+          // Cap max speed
+          if (Math.abs(player.speed) > maxSpeed) {
+            player.speed = maxSpeed * sign;
+          }
+        }
+        player.sprite.animations.play(dir);
+        player.lastDir = dir;
+      };
       if (cursors.left.isDown) {
-        //  Move to the left
-        this.sprite.body.velocity.x = -speed;
-        this.sprite.animations.play('left');
-        this.lastDir = 'left';
+        move(this, 'left');
       } else if (cursors.right.isDown) {
-        //  Move to the right
-        this.sprite.body.velocity.x = speed;
-        this.sprite.animations.play('right');
-        this.lastDir = 'right';
+        move(this, 'right');
       } else {
         //  Stand still
         this.sprite.animations.stop();
         this.sprite.frame = 4;
+        // Slow down
+        var sign = this.speed < 0 ? -1 : 1;
+        if (Math.abs(this.speed) < decel) {
+          this.speed = 0;
+        } else {
+          this.speed -= decel * sign;
+        }
       }
+      this.sprite.body.velocity.x = this.speed;
 
       //  Allow the player to jump if they are touching the ground.
       if (cursors.up.isDown) {
