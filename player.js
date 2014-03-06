@@ -46,9 +46,10 @@ var Player = function(game, gravity) {
   this.sprite.animations.add('right', [5, 6, 7, 8], 10, true);
   this.touchState = {};
   
-  // (h)orizontal or (v)ertical
+  // (h)orizontal, (v)ertical or (c)limbing
   // In horizontal mode, player walks along floors in building interiors
   // In vertical mode, player pushes off sides of buildings
+  // In climbing mode, player is tweening to climb so no collisions or movements allowed
   this.moveMode = 'v';
   
   this.lastDir = 'left';
@@ -190,5 +191,32 @@ var Player = function(game, gravity) {
   this.takeHit = function(bulletVelocity) {
     this.sprite.body.velocity.y = hitYMultiplier * gravity;
     this.sprite.body.velocity.x = bulletVelocity.x < 0 ? -hitXVel : hitXVel;
+  };
+  
+  this.climbCounter = 0;
+  this.climbDuration = 1000;
+  this.climbStart = {x: 0, y: 0};
+  this.climbEnd = {x: 0, y: 0};
+  this.startClimb = function(ledge, duration) {
+    this.moveMode = 'c';
+    this.climbCounter = 0;
+    this.climbDuration = duration;
+    this.climbStart = {x: this.sprite.body.x, y: this.sprite.body.y};
+    this.climbEnd = {x: ledge.body.x, y: ledge.body.y - ledge.body.height};
+    this.speed = 0;
+    this.sprite.body.velocity.x = 0;
+    this.sprite.body.velocity.y = 0;
+    this.sprite.body.allowGravity = false;
+  };
+  this.climb = function() {
+    var distance = Phaser.Easing.Quartic.InOut(this.climbCounter / this.climbDuration);
+    if (this.climbCounter >= this.climbDuration) {
+      this.moveMode = 'h';
+      this.sprite.body.allowGravity = true;
+    } else {
+      this.climbCounter++;
+      this.sprite.body.x = distance * this.climbEnd.x + (1 - distance) * this.climbStart.x;
+      this.sprite.body.y = distance * this.climbEnd.y + (1 - distance) * this.climbStart.y;
+    }
   };
 };

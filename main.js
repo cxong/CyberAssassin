@@ -66,6 +66,7 @@ function create () {
     buildings: game.add.group(),
     floors: game.add.group(),
     rooms: game.add.group(),
+    ledges: game.add.group(),
     glasses: game.add.group(),
     bullets: game.add.group()
   };
@@ -96,23 +97,33 @@ function create () {
 }
 
 function update() {
-  // Check if the player has entered a room, and modify move mode accordingly
-  player.moveMode = 'v';
-  game.physics.overlap(player.sprite, groups.rooms, overlapRoom);
-  // Conditional collision logic based on the move "mode" for the player
-  if (player.moveMode === 'h') {
-    // Horizontal mode, detect floor collisions only
-    game.physics.collide(player.sprite, groups.floors, collideFloor);
-  } else if (player.moveMode === 'v') {
-    // Vertical mode, detect building collisions
-    game.physics.collide(player.sprite, groups.buildings, collideFloor);
+  if (player.moveMode === 'c') {
+    player.climb();
+  } else {
+    // Check if the player has entered a room, and modify move mode accordingly
+    player.moveMode = 'v';
+    game.physics.overlap(player.sprite, groups.rooms, overlapRoom);
+    // Conditional collision logic based on the move "mode" for the player
+    if (player.moveMode === 'h') {
+      // Horizontal mode, detect floor collisions only
+      game.physics.collide(player.sprite, groups.floors, collideFloor);
+    } else if (player.moveMode === 'v') {
+      // Check if player has grabbed on to any ledges
+      game.physics.overlap(player.sprite, groups.ledges, grabLedge);
+      if (player.moveMode === 'v') {
+        // Vertical mode, detect building collisions
+        game.physics.collide(player.sprite, groups.buildings, collideFloor);
+      }
+    }
+    game.physics.overlap(player.sprite, groups.glasses, collideGlass);
+    game.physics.collide(chips, groups.buildings);
+    // Check for player pickups
+    game.physics.overlap(player.sprite, chips, collectChip, null, this);
   }
-  game.physics.overlap(player.sprite, groups.glasses, collideGlass);
-  game.physics.collide(chips, groups.buildings);
-  // Check for player pickups
-  game.physics.overlap(player.sprite, chips, collectChip, null, this);
   
-  player.handleInput(game, cursors);
+  if (player.moveMode !== 'c') {
+    player.handleInput(game, cursors);
+  }
 
   camera.update();
   player.update();
@@ -151,6 +162,11 @@ function collideGlass(playerSprite, glass) {
 
 function collideFloor(player, floor) {
   camera.playerCollide(floor);
+}
+
+function grabLedge(playerSprite, ledge) {
+  var distance = playerSprite.body.y - (ledge.body.y - ledge.body.height);
+  player.startClimb(ledge, distance);
 }
 
 function collectChip(player, chip) {
