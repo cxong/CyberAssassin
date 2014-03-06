@@ -16,6 +16,8 @@ var cursors;
 var music;
 var glassSound;
 var hitSound;
+var dieSound;
+var playerHitSound;
 
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
@@ -36,6 +38,8 @@ function preload () {
   game.load.audio('laser', ['sounds/laser.ogg']);
   game.load.audio('swish', ['sounds/swish.ogg']);
   game.load.audio('clang', ['sounds/clang.ogg']);
+  game.load.audio('explode', ['sounds/explode.ogg']);
+  game.load.audio('pong', ['sounds/landing.ogg']);
   
   game.load.audio('bgaudio', ['sounds/bg.mp3']);
   
@@ -53,6 +57,8 @@ function create () {
   music.play();
   glassSound = game.add.audio('glass');
   hitSound = game.add.audio('clang');
+  dieSound = game.add.audio('explode');
+  playerHitSound = game.add.audio('pong');
   
   enemies = [];
   
@@ -124,6 +130,10 @@ function update() {
       enemies[i].update(game, player, groups.bullets);
     }
   }
+  
+  // Check for bullet/player collisions
+  // If the player is hit, make them fall backwards and destroy the bullet
+  game.physics.overlap(player.sprite, groups.bullets, hitPlayer);
 
   // Parallax
   bgSprite.x = game.camera.x * 0.9;
@@ -149,5 +159,15 @@ function collectChip(player, chip) {
 
 function hitEnemy(melee, enemy) {
   enemy.damage(1);
-  hitSound.play();
+  if (enemy.alive) {
+    hitSound.play();
+  } else {
+    dieSound.play();
+  }
+}
+
+function hitPlayer(playerSprite, bullet) {
+  player.takeHit(bullet.body.velocity);
+  bullet.kill();
+  playerHitSound.play();
 }

@@ -19,6 +19,10 @@ var Player = function(game, gravity) {
   // Maximum speed when sliding against wall
   var maxSlideVel = 400;
   
+  // Velocities when taking hit from a bullet
+  var hitYMultiplier = -10;
+  var hitXVel = 200;
+  
   
   this.sprite = game.add.sprite(32, 150, 'player');
   //  Player physics properties
@@ -143,5 +147,12 @@ var Player = function(game, gravity) {
   this.update = function() {
     // Cap Y velocity so we don't fall so fast
     this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, maxYVel);
+  };
+  
+  // Take a hit from a bullet
+  // Taking hits launches the player in the direction of the bullet
+  this.takeHit = function(bulletVelocity) {
+    this.sprite.body.velocity.y = hitYMultiplier * gravity;
+    this.sprite.body.velocity.x = bulletVelocity.x < 0 ? -hitXVel : hitXVel;
   };
 };

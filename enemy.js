@@ -49,7 +49,7 @@ var Enemy = function(game, x, y) {
           this.fireCounter = fireCounterStart + Math.random() * fireCounterStart * 0.5;
           // X offset so the bullet fires outside the player from a "muzzle"
           // Note that since we use scale -1 to flip the sprite, this also flips width
-          var bullet = game.add.sprite(this.sprite.x - this.sprite.width, this.sprite.y - this.sprite.height / 2, 'bullet');
+          var bullet = game.add.sprite(this.sprite.x - this.sprite.width / 2, this.sprite.y - this.sprite.height / 2, 'bullet');
           bullet.body.velocity.x = -400;
           if (this.facing === 'right') {
             bullet.body.velocity.x *= -1;
