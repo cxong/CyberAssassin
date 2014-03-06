@@ -209,7 +209,7 @@ var Player = function(game, gravity) {
     this.sprite.body.allowGravity = false;
   };
   this.climb = function() {
-    var distance = Phaser.Easing.Quartic.InOut(this.climbCounter / this.climbDuration);
+    var distance = Phaser.Easing.Back.InOut(this.climbCounter / this.climbDuration);
     if (this.climbCounter >= this.climbDuration) {
       this.moveMode = 'h';
       this.sprite.body.allowGravity = true;
