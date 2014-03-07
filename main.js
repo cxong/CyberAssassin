@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(480, 800, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 20; // default, no-air-resistance gravity
 var groundY = 10000;
 var camera;
@@ -47,7 +47,6 @@ function preload () {
 }
 
 function create () {
-  game.world.setBounds(0, 0, 2000, groundY);
   bgSprite = game.add.sprite(0, 0, 'bgimage');
   bgSprite.scale.setTo(3, 3);
   
@@ -72,10 +71,16 @@ function create () {
   };
   
   buildings = new Buildings(game, groundY, groups);
-  buildings.add(200, 9750, enemies);
-  buildings.add(300, 9600, enemies);
-  buildings.add(350, 9400, enemies);
-  buildings.add(500, 9000, enemies);
+  var gameWidth = 0;
+  var i;
+  for (i = 0; i < 10; i++) {
+    var width = Math.round(Math.random() * 400 + 200);
+    var height = Math.round(9800 - Math.random() * 1000);
+    buildings.add(width, height, enemies);
+    gameWidth += width + buildingGap;
+  }
+  gameWidth -= buildingGap;
+  game.world.setBounds(0, 0, gameWidth, groundY);
   
   // The player and its settings
   player = new Player(game, gravity);
@@ -85,7 +90,7 @@ function create () {
   // Collectibles
   chips = game.add.group();
   //  Here we'll create 12 of them evenly spaced apart
-  for (var i = 0; i < 12; i++)
+  for (i = 0; i < 12; i++)
   {
       //  Create a star inside of the 'stars' group
       var chip = chips.create(i * 70, 0, 'chip');
@@ -115,11 +120,11 @@ function update() {
         game.physics.collide(player.sprite, groups.buildings, collideFloor);
       }
     }
-    game.physics.overlap(player.sprite, groups.glasses, collideGlass);
     game.physics.collide(chips, groups.buildings);
     // Check for player pickups
     game.physics.overlap(player.sprite, chips, collectChip, null, this);
   }
+  game.physics.overlap(player.sprite, groups.glasses, collideGlass);
   
   if (player.moveMode !== 'c') {
     player.handleInput(game, cursors);
@@ -166,7 +171,7 @@ function collideFloor(player, floor) {
 
 function grabLedge(playerSprite, ledge) {
   var distance = playerSprite.body.y - (ledge.body.y - ledge.body.height);
-  player.startClimb(ledge, distance);
+  player.startClimb(ledge, distance * 0.4);
 }
 
 function collectChip(player, chip) {

@@ -39,12 +39,8 @@ var Level = function(game, x, y, w, groups, enemies) {
   groups.rooms.add(this.room);
   
   // Windows; break them by running into them, otherwise nonfunctional
-  if (x >= game.world.bounds.x) {
-    this.windowLeft = new Window(game, x, y, h, groups.glasses);
-  }
-  if (x + w < game.world.bounds.x + game.world.bounds.width) {
-    this.windowRight = new Window(game, x + w - windowWidth, y, h, groups.glasses);
-  }
+  this.windowLeft = new Window(game, x, y, h, groups.glasses);
+  this.windowRight = new Window(game, x + w - windowWidth, y, h, groups.glasses);
   
   // Ledges: if grabbed on, will climb into the room above
   this.ledgeLeft = new Ledge(game, x, y + h, groups.ledges);
@@ -77,9 +73,8 @@ var Building = function(game, x, w, h, groundY, groups, enemies) {
   }
 };
 
+var buildingGap = 200;
 var Buildings = function(game, groundY, groups) {
-
-  var buildingGap = 200;
   var lastBuildingX = -buildingGap;
   this.add = function(w, h, enemies) {
     var building = new Building(
