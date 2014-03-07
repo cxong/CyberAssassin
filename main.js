@@ -165,7 +165,6 @@ function collideGlass(playerSprite, glass) {
 }
 
 function collideFloor(player, floor) {
-  camera.playerCollide(floor);
 }
 
 function grabLedge(playerSprite, ledge) {
