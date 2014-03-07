@@ -179,6 +179,8 @@ var Player = function(game, gravity) {
     this.meleeSprite.reset(pos.x, pos.y, 1);
     meleeSound.play();
     this.hadMelee = true;
+    // Slow down when attacking
+    this.speed /= 2;
   };
   
   this.update = function() {
@@ -218,5 +220,10 @@ var Player = function(game, gravity) {
       this.sprite.body.x = distance * this.climbEnd.x + (1 - distance) * this.climbStart.x;
       this.sprite.body.y = distance * this.climbEnd.y + (1 - distance) * this.climbStart.y;
     }
+  };
+  
+  this.flyTowards = function(body, flyMultiplier) {
+    this.sprite.body.velocity.x = (body.x - this.sprite.body.x) * flyMultiplier;
+    this.sprite.body.velocity.y = (body.y - this.sprite.body.y) * flyMultiplier;
   };
 };

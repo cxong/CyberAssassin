@@ -1,6 +1,6 @@
-var game = new Phaser.Game(480, 800, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 20; // default, no-air-resistance gravity
-var groundY = 10000;
+var groundY = 1000;
 var camera;
 var bgSprite;
 var player;
@@ -73,7 +73,7 @@ function create () {
   buildings = new Buildings(game, groundY, groups);
   var gameWidth = 0;
   var i;
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < 2; i++) {
     var width = Math.round(Math.random() * 400 + 200);
     var height = Math.round(9800 - Math.random() * 1000);
     buildings.add(width, height, enemies);
@@ -180,10 +180,29 @@ function collectChip(player, chip) {
 
 function hitEnemy(melee, enemy) {
   enemy.damage(1);
+  var flyMultiplier = 5;
   if (enemy.alive) {
     hitSound.play();
   } else {
     dieSound.play();
+    flyMultiplier = 10;
+  }
+  
+  // Combos: check if another enemy is in the vicinity, and move towards them
+  var closestEnemy = null;
+  var closestDistance = 0;
+  for (var i = 0; i < enemies.length; i++) {
+    if (!enemies[i].sprite.alive) {
+      continue;
+    }
+    var distance = Phaser.Point.distance(melee.body, enemies[i].sprite.body);
+    if (closestEnemy === null || closestDistance > distance) {
+      closestEnemy = enemies[i];
+      closestDistance = distance;
+    }
+  }
+  if (closestEnemy !== null && closestDistance < 150) {
+    player.flyTowards(closestEnemy.sprite.body, flyMultiplier);
   }
 }
 

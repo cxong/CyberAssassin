@@ -16,7 +16,7 @@ var Ledge = function(game, x, y, ledgeGroup) {
   ledgeGroup.add(this.sprite);
 };
 
-var Level = function(game, x, y, w, groups, enemies) {
+var Level = function(game, x, y, w, groundY, groups, enemies) {
   var h = 100;
   
   // Floors, which the player stands on in horizontal mode
@@ -48,8 +48,9 @@ var Level = function(game, x, y, w, groups, enemies) {
   
   // Randomly add enemies in rooms
   var numLocations = 5;
+  var threshold = y * 5 / groundY;
   for (var i = 1; i < numLocations - 1; i++) {
-    if (Math.random() * 6 < 1) {
+    if (Math.random() * 6 < threshold) {
       var enemyX = x + i * w / numLocations;
       enemies.push(new Enemy(game, enemyX, y + h));
     }
@@ -66,9 +67,9 @@ var Building = function(game, x, w, h, groundY, groups, enemies) {
   
   // Add levels at regular intervals
   this.levels = [];
-  var levelInterval = 500;
+  var levelInterval = 300;
   for (var levelY = groundY - h + levelInterval; levelY < groundY; levelY += levelInterval) {
-    var level = new Level(game, x, levelY, w, groups, enemies);
+    var level = new Level(game, x, levelY, w, groundY, groups, enemies);
     this.levels.push(level);
   }
 };
