@@ -59,9 +59,10 @@ var Player = function(game, gravity) {
   this.meleeSprite = game.add.sprite(0, 0, 'melee');
   this.meleeSprite.anchor.setTo(0.5, 0.5);
   this.meleeSprite.kill();
-  // Flag so that melee needs to be on key press not key down
-  this.hadMelee = false;
   var meleeSound = game.add.audio('swish');
+  // Have a cooldown so you can't melee too often
+  var meleeCooldown = 10;
+  this.meleeCounter = 0;
 
   // Move left, right, jump on ground
   // When jumping, cannot change x velocity
@@ -160,14 +161,14 @@ var Player = function(game, gravity) {
 
     // Check for melee
     if (game.input.keyboard.isDown(Phaser.Keyboard.Z)) {
-      if (!this.hadMelee) {
+      if (this.meleeCounter <= 0) {
         this.melee();
       } else {
         this.meleeSprite.kill();
       }
     } else {
       this.meleeSprite.kill();
-      this.hadMelee = false;
+      this.meleeCounter = 0;
     }
   };
   
@@ -183,7 +184,7 @@ var Player = function(game, gravity) {
     }
     this.meleeSprite.reset(pos.x, pos.y, 1);
     meleeSound.play();
-    this.hadMelee = true;
+    this.meleeCounter = meleeCooldown;
     // Slow down when attacking
     this.speed /= 2;
   };
@@ -191,6 +192,8 @@ var Player = function(game, gravity) {
   this.update = function() {
     // Cap Y velocity so we don't fall so fast
     this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, maxYVel);
+    
+    this.meleeCounter--;
   };
   
   // Take a hit from a bullet
