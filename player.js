@@ -15,12 +15,12 @@ var Player = function(game, gravity) {
   var maxSpeed = 400;
   
   // Multiplier of gravity of jump force
-  var jumpMultiplier = -15;
+  var jumpMultiplier = -20;
   
   // Speed for pushing off walls
   var pushForce = 500;
   // Also jump up a little when pushing off walls
-  var pushJumpMultiplier = -10;
+  var pushJumpMultiplier = -15;
   
   // Maximum speed in freefall
   var maxYVel = 600;
