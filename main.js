@@ -119,6 +119,7 @@ function update() {
         game.physics.collide(player.sprite, groups.buildings, collideFloor);
       }
     }
+    game.physics.collide(player.sprite, groups.ceilings);
     game.physics.collide(chips, groups.buildings);
     // Check for player pickups
     game.physics.overlap(player.sprite, chips, collectChip, null, this);

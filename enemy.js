@@ -57,6 +57,9 @@ var Enemy = function(game, x, y) {
           // X offset so the bullet fires outside the player from a "muzzle"
           // Note that since we use scale -1 to flip the sprite, this also flips width
           var bullet = game.add.sprite(this.sprite.x - this.sprite.width / 2, this.sprite.y - this.sprite.height / 2, 'bullet');
+          // Make the bullet small for collisions
+          bullet.body.width = 1;
+          bullet.body.height = 1;
           bullet.body.velocity.x = -400;
           if (this.facing === 'right') {
             bullet.body.velocity.x *= -1;
