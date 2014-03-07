@@ -58,28 +58,21 @@ function create () {
   playerHitSound = game.add.audio('pong');
   
   enemies = [];
-  
+
   groups = {
     buildings: game.add.group(),
     floors: game.add.group(),
+    ceilings: game.add.group(),
     rooms: game.add.group(),
     ledges: game.add.group(),
     glasses: game.add.group(),
     fixtures: game.add.group(),
+    enemies: game.add.group(),
     bullets: game.add.group()
   };
   
-  buildings = new Buildings(game, groundY, groups);
-  var gameWidth = 0;
-  var i;
-  for (i = 0; i < 4; i++) {
-    var width = Math.round(Math.random() * 400 + 200);
-    var height = Math.round(groundY - 200 - Math.random() * 500);
-    buildings.add(width, height, enemies);
-    gameWidth += width + buildingGap;
-  }
-  gameWidth -= buildingGap;
-  game.world.setBounds(0, 0, gameWidth, groundY);
+  buildings = new Buildings(game, groundY, groups, enemies);
+  buildings.build(game, 4);
   
   // The player and its settings
   player = new Player(game, gravity);
@@ -128,6 +121,8 @@ function update() {
   game.physics.overlap(player.sprite, chips, collectChip, null, this);
   // Glass collisions
   game.physics.overlap(player.sprite, groups.glasses, collideGlass);
+  // Fixture collisions
+  game.physics.overlap(player.sprite, groups.fixtures, killPlayer);
   
   if (player.moveMode !== 'c') {
     player.handleInput(game, cursors);
@@ -135,7 +130,7 @@ function update() {
 
   camera.update();
   player.update();
-  
+
   for (var i = 0; i < enemies.length; i++) {
     if (player.meleeSprite.alive) {
       // Check if player has hit any enemies
@@ -153,6 +148,10 @@ function update() {
   // Check for bullet/player collisions
   // If the player is hit, make them fall backwards and destroy the bullet
   game.physics.overlap(player.sprite, groups.bullets, hitPlayer);
+  
+  if (!player.sprite.alive) {
+    killPlayer();
+  }
 
   // Parallax
   bgSprite.x = game.camera.x * 0.9;
@@ -201,7 +200,7 @@ function hitEnemy(melee, enemy) {
     }
     var distance = Phaser.Point.distance(melee.body, enemies[i].sprite.body);
     if (closestEnemy === null || closestDistance > distance) {
-      closestEnemy = enemies[i];
+      closestEnemy = enemies[i].sprite;
       closestDistance = distance;
     }
   }
@@ -214,4 +213,18 @@ function hitPlayer(playerSprite, bullet) {
   player.takeHit(bullet.body.velocity);
   bullet.kill();
   playerHitSound.play();
+}
+
+function killPlayer(playerSprite, killer) {
+  player.sprite.kill();
+  for (var i = 0; i < enemies.length; i++) {
+    enemies[i].kill();
+  }
+  enemies = [];
+  reset();
+}
+
+function reset() {
+  player.reset();
+  buildings.reset(game);
 }

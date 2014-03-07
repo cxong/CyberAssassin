@@ -46,6 +46,8 @@ var Level = function(game, x, y, w, groundY, groups, enemies) {
   // Ceiling; decorational only
   var ceilingHeight = 16;
   this.ceiling = game.add.tileSprite(x, y - ceilingHeight, w, ceilingHeight, 'ceiling');
+  this.ceiling.body.immovable = true;
+  groups.ceilings.add(this.ceiling);
   
   // Room: touching these will cause the player's move mode to change
   // as if "entering" or "exiting" the room
@@ -68,13 +70,21 @@ var Level = function(game, x, y, w, groundY, groups, enemies) {
   for (var i = 1; i < numLocations - 1; i++) {
     if (Math.random() * 6 < threshold) {
       var enemyX = x + i * w / numLocations;
-      enemies.push(new Enemy(game, enemyX, y + levelHeight));
+      var enemy = new Enemy(game, enemyX, y + levelHeight);
+      enemies.push(enemy);
+      groups.enemies.add(enemy.sprite);
     }
   }
 };
 
 var Fixture = function(game, x, y, dir, fixturesGroup) {
   this.sprite = game.add.sprite(x, y, 'fixture');
+   if (dir === 'left') {
+    this.sprite.x -= this.sprite.width / 2;
+  } else {
+    this.sprite.x += this.sprite.width / 2;
+  }
+  this.sprite.anchor.setTo(0.5, 0);
   this.sprite.body.immovable = true;
   if (dir === 'left') {
     this.sprite.scale.x *= -1;
@@ -122,12 +132,38 @@ var Building = function(game, x, w, h, groundY, groups, enemies) {
 };
 
 var buildingGap = 350;
-var Buildings = function(game, groundY, groups) {
-  var lastBuildingX = -buildingGap;
-  this.add = function(w, h, enemies) {
+var Buildings = function(game, groundY, groups, enemies) {
+  this.numBuildings = 0;
+  this.lastBuildingX = 0;
+  this.build = function(game, numBuildings) {
+    this.numBuildings = numBuildings;
+    this.lastBuildingX = -buildingGap;
+    var gameWidth = 0;
+    for (var i = 0; i < numBuildings; i++) {
+      var width = Math.round(Math.random() * 400 + 200);
+      var height = Math.round(groundY - 200 - Math.random() * 500);
+      this.add(width, height);
+      gameWidth += width + buildingGap;
+    }
+    gameWidth -= buildingGap;
+    game.world.setBounds(0, 0, gameWidth, groundY);
+  };
+  this.add = function(w, h) {
     var building = new Building(
-      game, lastBuildingX + buildingGap, w, h, groundY, groups, enemies);
+      game, this.lastBuildingX + buildingGap, w, h, groundY, groups, enemies);
     groups.buildings.add(building.sprite);
-    lastBuildingX += buildingGap + w;
+    this.lastBuildingX += buildingGap + w;
+  };
+  this.reset = function(game) {
+    groups.buildings.removeAll();
+    groups.floors.removeAll();
+    groups.ceilings.removeAll();
+    groups.rooms.removeAll();
+    groups.ledges.removeAll();
+    groups.glasses.removeAll();
+    groups.fixtures.removeAll();
+    groups.enemies.removeAll();
+    groups.bullets.removeAll();
+    this.build(game, this.numBuildings);
   };
 };

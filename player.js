@@ -236,4 +236,9 @@ var Player = function(game, gravity) {
     this.sprite.body.velocity.x = (body.x - this.sprite.body.x) * flyMultiplier;
     this.sprite.body.velocity.y = (body.y - this.sprite.body.y) * flyMultiplier;
   };
+  
+  this.reset = function() {
+    this.sprite.reset(32, 150, 10);
+    this.speed = 0;
+  };
 };
