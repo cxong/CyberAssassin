@@ -9,7 +9,7 @@ var Player = function(game, gravity) {
   var decel = accel * 1.5;
   
   // Initial speed when at rest or moving in opposite direction
-  var minSpeed = 100;
+  var minSpeed = 200;
 
   // Max for moving left/right  
   var maxSpeed = 400;
@@ -144,6 +144,11 @@ var Player = function(game, gravity) {
         } else {
           this.speed -= decel * sign;
         }
+        // Stop if below min speed
+        // This is to stop falling too far down a hole
+        if (Math.abs(this.speed) < minSpeed) {
+          this.speed = 0;
+        }
       }
       this.sprite.body.velocity.x = this.speed;
 
@@ -193,6 +198,8 @@ var Player = function(game, gravity) {
   this.takeHit = function(bulletVelocity) {
     this.sprite.body.velocity.y = hitYMultiplier * gravity;
     this.sprite.body.velocity.x = bulletVelocity.x < 0 ? -hitXVel : hitXVel;
+    // Reset speed to prevent anomalous movement
+    this.speed = 0;
   };
   
   this.climbCounter = 0;

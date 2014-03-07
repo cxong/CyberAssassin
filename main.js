@@ -33,6 +33,7 @@ function preload () {
   game.load.spritesheet('enemy', 'images/enemy.png', 64, 64);
   game.load.image('melee', 'images/melee.png');
   game.load.image('bullet', 'images/bullet.png');
+  game.load.spritesheet('shot_indicator', 'images/shot_indicator.png', 32, 32);
   
   game.load.audio('glass', ['sounds/glass.ogg']);
   game.load.audio('laser', ['sounds/laser.ogg']);
