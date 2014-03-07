@@ -16,7 +16,6 @@ var cursors;
 var music;
 var glassSound;
 var hitSound;
-var dieSound;
 var playerHitSound;
 
 function preload () {
@@ -57,7 +56,6 @@ function create () {
   music.play();
   glassSound = game.add.audio('glass');
   hitSound = game.add.audio('clang');
-  dieSound = game.add.audio('explode');
   playerHitSound = game.add.audio('pong');
   
   enemies = [];
@@ -140,7 +138,7 @@ function update() {
       game.physics.overlap(player.meleeSprite, enemies[i].sprite, hitEnemy);
     }
     if (!enemies[i].sprite.alive) {
-      enemies[i].sprite.destroy();
+      enemies[i].kill();
       enemies.splice(i, 1);
       i--;
     } else {
@@ -185,7 +183,6 @@ function hitEnemy(melee, enemy) {
   if (enemy.alive) {
     hitSound.play();
   } else {
-    dieSound.play();
     flyMultiplier = 5;
   }
   
