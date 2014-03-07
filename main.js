@@ -205,7 +205,7 @@ function hitEnemy(melee, enemy) {
     }
   }
   if (closestEnemy !== null && closestDistance < 150) {
-    player.flyTowards(closestEnemy.sprite.body, flyMultiplier);
+    player.flyTowards(closestEnemy.body, flyMultiplier);
   }
 }
 
@@ -220,7 +220,7 @@ function killPlayer(playerSprite, killer) {
   for (var i = 0; i < enemies.length; i++) {
     enemies[i].kill();
   }
-  enemies = [];
+  enemies.length = 0;
   reset();
 }
 
