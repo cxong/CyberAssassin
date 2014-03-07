@@ -18,9 +18,9 @@ var Player = function(game, gravity) {
   var jumpMultiplier = -20;
   
   // Speed for pushing off walls
-  var pushForce = 500;
+  var pushForce = 700;
   // Also jump up a little when pushing off walls
-  var pushJumpMultiplier = -15;
+  var pushJumpMultiplier = -20;
   
   // Maximum speed in freefall
   var maxYVel = 600;
@@ -97,7 +97,7 @@ var Player = function(game, gravity) {
           this.touchState.left = false;
           this.lastDir = 'right';
         } else if (cursors.left.isDown) {
-          this.sprite.body.velocity.x = -100;
+          //this.sprite.body.velocity.x = -100;
         }
       } else if (this.touchState.right) {
         if (cursors.left.isDown) {
@@ -107,7 +107,7 @@ var Player = function(game, gravity) {
           this.touchState.right = false;
           this.lastDir = 'left';
         } else if (cursors.right.isDown) {
-          this.sprite.body.velocity.x = 100;
+          //this.sprite.body.velocity.x = 100;
         }
       }
     } else if (newTouch.down) {
@@ -209,12 +209,12 @@ var Player = function(game, gravity) {
   this.climbDuration = 1000;
   this.climbStart = {x: 0, y: 0};
   this.climbEnd = {x: 0, y: 0};
-  this.startClimb = function(ledge, duration) {
+  this.startClimb = function(ledge, point, duration) {
     this.moveMode = 'c';
     this.climbCounter = 0;
     this.climbDuration = duration;
     this.climbStart = {x: this.sprite.body.x, y: this.sprite.body.y};
-    this.climbEnd = {x: ledge.body.x, y: ledge.body.y - ledge.body.height};
+    this.climbEnd = point.add(0, -this.sprite.body.height / 2);
     this.speed = 0;
     this.sprite.body.velocity.x = 0;
     this.sprite.body.velocity.y = 0;

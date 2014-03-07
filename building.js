@@ -1,5 +1,4 @@
 var windowWidth = 8;
-var ledgeWidth = 32;
 var levelHeight = 100;
 
 var Window = function(game, x, y, h, glassGroup) {
@@ -9,12 +8,30 @@ var Window = function(game, x, y, h, glassGroup) {
   glassGroup.add(this.sprite);
 };
 
-var Ledge = function(game, x, y, ledgeGroup) {
-  var ledgeHeight = 50;
-  this.sprite = game.add.tileSprite(x, y, ledgeWidth, ledgeHeight, 'ceiling');
+var Ledge = function(game, x, y, dir, ledgeGroup) {
+  var ledgeWidth = 32;
+  var ledgeHeight = 32;
+  this.sprite = game.add.tileSprite(
+    x - ledgeWidth / 2, y, ledgeWidth, ledgeHeight, 'ceiling');
   this.sprite.body.width = ledgeWidth;
   this.sprite.body.height = ledgeHeight;
   ledgeGroup.add(this.sprite);
+  this.sprite.dir = dir;
+  this.sprite.canClimb = function(xVel) {
+    if (this.dir === 'left') {
+      return xVel > 0;
+    } else {
+      return xVel < 0;
+    }
+  };
+  this.sprite.getClimbPoint = function() {
+    var y = this.body.y - this.body.height;
+    if (this.dir === 'left') {
+      return new Phaser.Point(this.body.x + this.body.width, y);
+    } else {
+      return new Phaser.Point(this.body.x - this.body.width, y);
+    }
+  };
 };
 
 var Level = function(game, x, y, w, groundY, groups, enemies) {
@@ -42,8 +59,8 @@ var Level = function(game, x, y, w, groundY, groups, enemies) {
   this.windowRight = new Window(game, x + w - windowWidth, y, levelHeight, groups.glasses);
   
   // Ledges: if grabbed on, will climb into the room above
-  this.ledgeLeft = new Ledge(game, x, y + levelHeight, groups.ledges);
-  this.ledgeRight = new Ledge(game, x + w - ledgeWidth, y + levelHeight, groups.ledges);
+  this.ledgeLeft = new Ledge(game, x, y + levelHeight, 'left', groups.ledges);
+  this.ledgeRight = new Ledge(game, x + w, y + levelHeight, 'right', groups.ledges);
   
   // Randomly add enemies in rooms
   var numLocations = 5;
@@ -56,6 +73,15 @@ var Level = function(game, x, y, w, groundY, groups, enemies) {
   }
 };
 
+var Fixture = function(game, x, y, dir, fixturesGroup) {
+  this.sprite = game.add.sprite(x, y, 'fixture');
+  this.sprite.body.immovable = true;
+  if (dir === 'left') {
+    this.sprite.scale.x *= -1;
+  }
+  fixturesGroup.add(this.sprite);
+};
+
 var Building = function(game, x, w, h, groundY, groups, enemies) {
   this.sprite = game.add.tileSprite(x, groundY - h, w, h, 'building');
   this.sprite.body.width = w;
@@ -64,19 +90,38 @@ var Building = function(game, x, w, h, groundY, groups, enemies) {
   // This stops it from falling away when you jump on it
   this.sprite.body.immovable = true;
   
-  // Add levels at random intervals
-  this.levels = [];
-  var levelInterval = 300;
+  // Add levels and fixtures at random intervals
+  var levelInterval = 150;
+  // Track whether we have last placed a fixture
+  // Don't place consecutive fixtures otherwise the player can't jump here
+  var lastFixtures = { left: false, right: false };
   for (var levelY = groundY - h + levelInterval;
        levelY + levelHeight < groundY;
        levelY += levelInterval) {
-    var level = new Level(game, x, levelY, w, groundY, groups, enemies);
-    this.levels.push(level);
-    levelInterval = Math.round(250 + Math.random(200));
+    // two fixtures for every level
+    var roll = Math.floor(Math.random() * 3);
+    if (roll < 2) {
+      // Fixtures
+      if (x > 0 && !lastFixtures.left) {
+        new Fixture(game, x, levelY, 'left', groups.fixtures);
+        lastFixtures.left = true;
+      } else {
+        lastFixtures.left = false;
+      }
+      if (!lastFixtures.right) {
+        new Fixture(game, x + w, levelY, 'right', groups.fixtures);
+        lastFixtures.right = true;
+      } else {
+        lastFixtures.right = false;
+      }
+    } else {
+      new Level(game, x, levelY, w, groundY, groups, enemies);
+      levelInterval = Math.round(500 + Math.random(300));
+    }
   }
 };
 
-var buildingGap = 200;
+var buildingGap = 350;
 var Buildings = function(game, groundY, groups) {
   var lastBuildingX = -buildingGap;
   this.add = function(w, h, enemies) {

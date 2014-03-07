@@ -1,6 +1,6 @@
 var game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 20; // default, no-air-resistance gravity
-var groundY = 5000;
+var groundY = 10000;
 var camera;
 var bgSprite;
 var player;
@@ -27,6 +27,7 @@ function preload () {
   game.load.image('ceiling', 'images/ceiling.png');
   game.load.image('room', 'images/room.png');
   game.load.image('glass', 'images/glass.png');
+  game.load.image('fixture', 'images/grate.png');
   
   game.load.spritesheet('player', 'images/dude.png', 32, 48);
   game.load.spritesheet('enemy', 'images/enemy.png', 64, 64);
@@ -41,7 +42,7 @@ function preload () {
   game.load.audio('explode', ['sounds/explode.ogg']);
   game.load.audio('pong', ['sounds/landing.ogg']);
   
-  game.load.audio('bgaudio', ['sounds/bg.mp3']);
+  game.load.audio('bgaudio', ['sounds/bg.ogg']);
   
   cursors = game.input.keyboard.createCursorKeys();
 }
@@ -51,9 +52,7 @@ function create () {
   bgSprite.scale.setTo(3, 3);
   
   music = game.add.audio('bgaudio');
-  music.volume = 0.5;
-  music.loop = true;
-  music.play();
+  music.play('', 0, 0.5, true);
   glassSound = game.add.audio('glass');
   hitSound = game.add.audio('clang');
   playerHitSound = game.add.audio('pong');
@@ -66,6 +65,7 @@ function create () {
     rooms: game.add.group(),
     ledges: game.add.group(),
     glasses: game.add.group(),
+    fixtures: game.add.group(),
     bullets: game.add.group()
   };
   
@@ -113,7 +113,9 @@ function update() {
       game.physics.collide(player.sprite, groups.floors, collideFloor);
     } else if (player.moveMode === 'v') {
       // Check if player has grabbed on to any ledges
-      game.physics.overlap(player.sprite, groups.ledges, grabLedge);
+      if (player.sprite.body.velocity.x !== 0) {
+        game.physics.overlap(player.sprite, groups.ledges, grabLedge);
+      }
       if (player.moveMode === 'v') {
         // Vertical mode, detect building collisions
         game.physics.collide(player.sprite, groups.buildings, collideFloor);
@@ -121,9 +123,10 @@ function update() {
     }
     game.physics.collide(player.sprite, groups.ceilings);
     game.physics.collide(chips, groups.buildings);
-    // Check for player pickups
-    game.physics.overlap(player.sprite, chips, collectChip, null, this);
   }
+  // Check for player pickups
+  game.physics.overlap(player.sprite, chips, collectChip, null, this);
+  // Glass collisions
   game.physics.overlap(player.sprite, groups.glasses, collideGlass);
   
   if (player.moveMode !== 'c') {
@@ -169,8 +172,11 @@ function collideFloor(player, floor) {
 }
 
 function grabLedge(playerSprite, ledge) {
-  var distance = playerSprite.body.y - (ledge.body.y - ledge.body.height);
-  player.startClimb(ledge, distance * 0.4);
+  if (ledge.canClimb(playerSprite.body.velocity.x)) {
+    var point = ledge.getClimbPoint();
+    var distance = playerSprite.body.y - point.y;
+    player.startClimb(ledge, point, distance * 0.8);
+  }
 }
 
 function collectChip(player, chip) {
