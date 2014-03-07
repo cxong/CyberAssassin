@@ -185,7 +185,7 @@ function hitEnemy(melee, enemy) {
     hitSound.play();
   } else {
     dieSound.play();
-    flyMultiplier = 10;
+    flyMultiplier = 5;
   }
   
   // Combos: check if another enemy is in the vicinity, and move towards them
