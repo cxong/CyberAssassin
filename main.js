@@ -74,7 +74,7 @@ function create () {
   var i;
   for (i = 0; i < 4; i++) {
     var width = Math.round(Math.random() * 400 + 200);
-    var height = Math.round(groundY - 200 - Math.random() * 1000);
+    var height = Math.round(groundY - 200 - Math.random() * 500);
     buildings.add(width, height, enemies);
     gameWidth += width + buildingGap;
   }

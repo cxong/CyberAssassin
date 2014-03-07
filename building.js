@@ -1,5 +1,6 @@
 var windowWidth = 8;
 var ledgeWidth = 32;
+var levelHeight = 100;
 
 var Window = function(game, x, y, h, glassGroup) {
   this.sprite = game.add.tileSprite(x, y, windowWidth, h, 'glass');
@@ -17,11 +18,9 @@ var Ledge = function(game, x, y, ledgeGroup) {
 };
 
 var Level = function(game, x, y, w, groundY, groups, enemies) {
-  var h = 100;
-  
   // Floors, which the player stands on in horizontal mode
   var floorHeight = 16;
-  this.floor = game.add.tileSprite(x, y + h, w, floorHeight, 'floor');
+  this.floor = game.add.tileSprite(x, y + levelHeight, w, floorHeight, 'floor');
   this.floor.body.width = w;
   this.floor.body.height = floorHeight;
   this.floor.body.immovable = true;
@@ -33,18 +32,18 @@ var Level = function(game, x, y, w, groundY, groups, enemies) {
   
   // Room: touching these will cause the player's move mode to change
   // as if "entering" or "exiting" the room
-  this.room = game.add.tileSprite(x, y, w, h, 'room');
+  this.room = game.add.tileSprite(x, y, w, levelHeight, 'room');
   this.room.body.width = w;
-  this.room.body.height = h;
+  this.room.body.height = levelHeight;
   groups.rooms.add(this.room);
   
   // Windows; break them by running into them, otherwise nonfunctional
-  this.windowLeft = new Window(game, x, y, h, groups.glasses);
-  this.windowRight = new Window(game, x + w - windowWidth, y, h, groups.glasses);
+  this.windowLeft = new Window(game, x, y, levelHeight, groups.glasses);
+  this.windowRight = new Window(game, x + w - windowWidth, y, levelHeight, groups.glasses);
   
   // Ledges: if grabbed on, will climb into the room above
-  this.ledgeLeft = new Ledge(game, x, y + h, groups.ledges);
-  this.ledgeRight = new Ledge(game, x + w - ledgeWidth, y + h, groups.ledges);
+  this.ledgeLeft = new Ledge(game, x, y + levelHeight, groups.ledges);
+  this.ledgeRight = new Ledge(game, x + w - ledgeWidth, y + levelHeight, groups.ledges);
   
   // Randomly add enemies in rooms
   var numLocations = 5;
@@ -52,7 +51,7 @@ var Level = function(game, x, y, w, groundY, groups, enemies) {
   for (var i = 1; i < numLocations - 1; i++) {
     if (Math.random() * 6 < threshold) {
       var enemyX = x + i * w / numLocations;
-      enemies.push(new Enemy(game, enemyX, y + h));
+      enemies.push(new Enemy(game, enemyX, y + levelHeight));
     }
   }
 };
@@ -65,12 +64,15 @@ var Building = function(game, x, w, h, groundY, groups, enemies) {
   // This stops it from falling away when you jump on it
   this.sprite.body.immovable = true;
   
-  // Add levels at regular intervals
+  // Add levels at random intervals
   this.levels = [];
   var levelInterval = 300;
-  for (var levelY = groundY - h + levelInterval; levelY < groundY; levelY += levelInterval) {
+  for (var levelY = groundY - h + levelInterval;
+       levelY + levelHeight < groundY;
+       levelY += levelInterval) {
     var level = new Level(game, x, levelY, w, groundY, groups, enemies);
     this.levels.push(level);
+    levelInterval = Math.round(250 + Math.random(200));
   }
 };
 
