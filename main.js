@@ -1,6 +1,6 @@
 var game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 20; // default, no-air-resistance gravity
-var groundY = 1000;
+var groundY = 5000;
 var camera;
 var bgSprite;
 var player;
@@ -72,9 +72,9 @@ function create () {
   buildings = new Buildings(game, groundY, groups);
   var gameWidth = 0;
   var i;
-  for (i = 0; i < 2; i++) {
+  for (i = 0; i < 4; i++) {
     var width = Math.round(Math.random() * 400 + 200);
-    var height = Math.round(9800 - Math.random() * 1000);
+    var height = Math.round(groundY - 200 - Math.random() * 1000);
     buildings.add(width, height, enemies);
     gameWidth += width + buildingGap;
   }
