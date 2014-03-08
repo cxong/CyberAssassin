@@ -92,7 +92,7 @@ var Fixture = function(game, x, y, dir, fixturesGroup) {
   fixturesGroup.add(this.sprite);
 };
 
-var Building = function(game, x, w, h, groundY, groups, enemies) {
+var Building = function(game, x, w, h, groundY, groups, enemies, otherFixturesRight) {
   this.sprite = game.add.tileSprite(x, groundY - h, w, h, 'building');
   this.sprite.body.width = w;
   this.sprite.body.height = h;
@@ -100,19 +100,27 @@ var Building = function(game, x, w, h, groundY, groups, enemies) {
   // This stops it from falling away when you jump on it
   this.sprite.body.immovable = true;
   
-  // Add levels and fixtures at random intervals
+  // Add levels and fixtures at intervals
   var levelInterval = 150;
+  // Track the fixtures we've placed on the right
+  // This is to prevent placing fixtures at the same level on the left of the next building
+  // The player can't jump through those
+  this.fixturesRight = [];
   // Track whether we have last placed a fixture
   // Don't place consecutive fixtures otherwise the player can't jump here
   var lastFixtures = { left: false, right: false };
+  var i = 0;
   for (var levelY = groundY - h + levelInterval;
        levelY + levelHeight < groundY;
        levelY += levelInterval) {
-    // two fixtures for every level
-    var roll = Math.floor(Math.random() * 3);
-    if (roll < 2) {
+    // three fixtures for every level
+    var roll = Math.floor(Math.random() * 4);
+    if (roll < 3) {
       // Fixtures
-      if (x > 0 && !lastFixtures.left) {
+      // Make sure there's no fixture on the right of the last building
+      // for us to place a fixture on the left of this building
+      if (x > 0 && !lastFixtures.left &&
+          (otherFixturesRight.length <= i || !otherFixturesRight[i])) {
         new Fixture(game, x, levelY, 'left', groups.fixtures);
         lastFixtures.left = true;
       } else {
@@ -126,8 +134,10 @@ var Building = function(game, x, w, h, groundY, groups, enemies) {
       }
     } else {
       new Level(game, x, levelY, w, groundY, groups, enemies);
-      levelInterval = Math.round(500 + Math.random(300));
     }
+    levelInterval = 300;
+    this.fixturesRight.push(lastFixtures.right);
+    i++;
   }
 };
 
@@ -135,13 +145,14 @@ var buildingGap = 350;
 var Buildings = function(game, groundY, groups, enemies) {
   this.numBuildings = 0;
   this.lastBuildingX = 0;
+  this.lastFixturesRight = [];
   this.build = function(game, numBuildings) {
     this.numBuildings = numBuildings;
     this.lastBuildingX = -buildingGap;
     var gameWidth = 0;
     for (var i = 0; i < numBuildings; i++) {
       var width = Math.round(Math.random() * 400 + 200);
-      var height = Math.round(groundY - 200 - Math.random() * 500);
+      var height = Math.round(groundY - 250);
       this.add(width, height);
       gameWidth += width + buildingGap;
     }
@@ -150,9 +161,10 @@ var Buildings = function(game, groundY, groups, enemies) {
   };
   this.add = function(w, h) {
     var building = new Building(
-      game, this.lastBuildingX + buildingGap, w, h, groundY, groups, enemies);
+      game, this.lastBuildingX + buildingGap, w, h, groundY, groups, enemies, this.lastFixturesRight);
     groups.buildings.add(building.sprite);
     this.lastBuildingX += buildingGap + w;
+    this.lastFixturesRight = building.fixturesRight;
   };
   this.reset = function(game) {
     groups.buildings.removeAll();
