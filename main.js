@@ -130,7 +130,7 @@ function update() {
   }
 
   camera.update();
-  player.update();
+  player.update(groups.chips);
 
   for (var i = 0; i < enemies.length; i++) {
     if (player.meleeSprite.alive) {

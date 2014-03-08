@@ -118,7 +118,7 @@ var Building = function(game, x, w, h, groundY, groups, enemies,
   // Don't place consecutive fixtures otherwise the player can't jump here
   var lastFixtures = { left: false, right: false };
   var i = 0;
-  var chipAdded = false;
+  this.chipAdded = false;
   for (var levelY = groundY - h + levelInterval;
        levelY + levelHeight < groundY;
        levelY += levelInterval) {
@@ -144,10 +144,10 @@ var Building = function(game, x, w, h, groundY, groups, enemies,
     } else {
       // Add a chip if we're past chipAddPercentHeight height for the building,
       // and if we haven't placed a chip yet
-      var placeChip = !chipAdded && (levelY - (groundY - h)) / h > chipAddPercentHeight;
+      var placeChip = !this.chipAdded && (levelY - (groundY - h)) / h > chipAddPercentHeight;
       new Level(game, x, levelY, w, groundY, groups, enemies, placeChip);
       if (placeChip) {
-        chipAdded = true;
+        this.chipAdded = true;
       }
     }
     levelInterval = 300;

@@ -1,8 +1,8 @@
-var Compass = function(game, chipsGroup) {
+var Compass = function(game) {
   this.sprite = game.add.sprite(0, 0, 'arrow');
   this.sprite.anchor.setTo(0.5, 0.5);
 
-  this.update = function(playerSprite) {
+  this.update = function(playerSprite, chipsGroup) {
     // find the first chip that is below the player
     var firstChipBelow = null;
     for (var i = 0; i < chipsGroup.total; i++) {
