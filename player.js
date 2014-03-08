@@ -64,6 +64,10 @@ var Player = function(game, gravity) {
   var meleeCooldown = 10;
   this.meleeCounter = 0;
 
+  this.sprite.health = maxHealth;
+  this.healthIndicator = new HealthIndicator(game, this.sprite.x, this.sprite.y);
+  this.healthIndicator.show(this.sprite);
+
   // Move left, right, jump on ground
   // When jumping, cannot change x velocity
   this.handleInput = function(game, cursors) {
@@ -193,6 +197,9 @@ var Player = function(game, gravity) {
     // Cap Y velocity so we don't fall so fast
     this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, maxYVel);
     
+    // Move the health indicator
+    this.healthIndicator.setPosition(this.sprite);
+    
     this.meleeCounter--;
   };
   
@@ -203,6 +210,9 @@ var Player = function(game, gravity) {
     this.sprite.body.velocity.x = bulletVelocity.x < 0 ? -hitXVel : hitXVel;
     // Reset speed to prevent anomalous movement
     this.speed = 0;
+    // Reduce health
+    this.sprite.damage(1);
+    this.healthIndicator.show(this.sprite);
   };
   
   this.climbCounter = 0;
@@ -241,7 +251,8 @@ var Player = function(game, gravity) {
   };
   
   this.reset = function() {
-    this.sprite.reset(32, 150, 10);
+    this.sprite.reset(32, 150, maxHealth);
     this.speed = 0;
+    this.healthIndicator.show(this.sprite);
   };
 };

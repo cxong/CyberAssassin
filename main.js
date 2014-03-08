@@ -18,6 +18,8 @@ var glassSound;
 var hitSound;
 var playerHitSound;
 
+var muteKey;
+
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
   game.load.image('building', 'images/05muronero.jpg');
@@ -34,6 +36,7 @@ function preload () {
   game.load.image('melee', 'images/melee.png');
   game.load.image('bullet', 'images/bullet.png');
   game.load.spritesheet('shot_indicator', 'images/shot_indicator.png', 32, 32);
+  game.load.spritesheet('health', 'images/health.png', 32, 32);
   
   game.load.audio('glass', ['sounds/glass.ogg']);
   game.load.audio('laser', ['sounds/laser.ogg']);
@@ -45,6 +48,7 @@ function preload () {
   game.load.audio('bgaudio', ['sounds/bg.ogg']);
   
   cursors = game.input.keyboard.createCursorKeys();
+  muteKey = game.input.keyboard.addKey(Phaser.Keyboard.M);
 }
 
 function create () {
@@ -53,6 +57,7 @@ function create () {
   
   music = game.add.audio('bgaudio');
   music.play('', 0, 0.5, true);
+  muteKey.onDown.add(function() { music.volume = 0.5 - music.volume; }, this);
   glassSound = game.add.audio('glass');
   hitSound = game.add.audio('clang');
   playerHitSound = game.add.audio('pong');
