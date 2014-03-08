@@ -74,9 +74,12 @@ var Enemy = function(game, x, y) {
     }
   };
   
-  this.kill = function() {
+  this.kill = function(playSound) {
+    playSound = typeof playSound === "undefined" ? true : playSound;
     this.sprite.destroy();
     this.shotIndicator.hide();
-    dieSound.play();
+    if (playSound) {
+      dieSound.play();
+    }
   };
 };

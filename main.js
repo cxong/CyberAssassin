@@ -44,6 +44,7 @@ function preload () {
   game.load.audio('clang', ['sounds/clang.ogg']);
   game.load.audio('explode', ['sounds/explode.ogg']);
   game.load.audio('pong', ['sounds/landing.ogg']);
+  game.load.audio('boom', ['sounds/boom.ogg']);
   
   game.load.audio('bgaudio', ['sounds/bg.ogg']);
   
@@ -227,7 +228,7 @@ function hitPlayer(playerSprite, bullet) {
 function killPlayer(playerSprite, killer) {
   player.sprite.kill();
   for (var i = 0; i < enemies.length; i++) {
-    enemies[i].kill();
+    enemies[i].kill(false);
   }
   enemies.length = 0;
   reset();

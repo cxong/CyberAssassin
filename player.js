@@ -33,6 +33,9 @@ var Player = function(game, gravity) {
   var hitXVel = 200;
   
   
+  var dieSound = game.add.audio('boom');
+  
+  
   // Note: need to track running speed manually because ground collisions
   // slow the player down
   this.speed = 0;
@@ -251,6 +254,7 @@ var Player = function(game, gravity) {
   };
   
   this.reset = function() {
+    dieSound.play();
     this.sprite.reset(32, 150, maxHealth);
     this.speed = 0;
     this.healthIndicator.show(this.sprite);
