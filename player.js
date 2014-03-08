@@ -12,7 +12,7 @@ var Player = function(game, gravity, chipsGroup) {
   var minSpeed = 200;
 
   // Max for moving left/right  
-  var maxSpeed = 400;
+  var maxSpeed = 500;
   
   // Multiplier of gravity of jump force
   var jumpMultiplier = -20;

@@ -19,8 +19,8 @@ var Compass = function(game) {
       var d = new Phaser.Point(firstChipBelow.x - playerSprite.x,
                                firstChipBelow.y - playerSprite.y);
       d = d.normalize();
-      this.sprite.x = playerSprite.x + d.setMagnitude(128).x;
-      this.sprite.y = playerSprite.y + d.setMagnitude(128).y;
+      this.sprite.reset(playerSprite.x + d.setMagnitude(128).x,
+                        playerSprite.y + d.setMagnitude(128).y);
       this.sprite.angle = Math.atan2(d.x, -d.y) * 180.0 / Math.PI - 90;
     }
   };
