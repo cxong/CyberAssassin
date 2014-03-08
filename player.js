@@ -34,6 +34,11 @@ var Player = function(game, gravity) {
   
   
   var dieSound = game.add.audio('boom');
+  var walkSound = game.add.audio('steps');
+  var pushSound = game.add.audio('swoosh');
+  var jumpSound = game.add.audio('jump');
+  var scrapeSound = game.add.audio('scrape');
+  var ledgeSound = game.add.audio('ledge');
   
   
   // Note: need to track running speed manually because ground collisions
@@ -103,6 +108,7 @@ var Player = function(game, gravity) {
           this.sprite.animations.play('right');
           this.touchState.left = false;
           this.lastDir = 'right';
+          pushSound.play();
         } else if (cursors.left.isDown) {
           //this.sprite.body.velocity.x = -100;
         }
@@ -113,9 +119,14 @@ var Player = function(game, gravity) {
           this.sprite.animations.play('left');
           this.touchState.right = false;
           this.lastDir = 'left';
+          pushSound.play();
         } else if (cursors.right.isDown) {
           //this.sprite.body.velocity.x = 100;
         }
+      }
+      
+      if (this.sprite.body.velocity.x === 0 && !scrapeSound.isPlaying) {
+        scrapeSound.play('', 0, 0.2, true);
       }
     } else if (newTouch.down) {
       this.sprite.body.velocity.x = 0;
@@ -159,11 +170,25 @@ var Player = function(game, gravity) {
         }
       }
       this.sprite.body.velocity.x = this.speed;
+      
+      if (this.speed !== 0 && !walkSound.isPlaying) {
+        walkSound.play('', 0, 0.8, true);
+      }
 
       //  Allow the player to jump if they are touching the ground.
       if (cursors.up.isDown) {
        this.sprite.body.velocity.y = this.sprite.body.gravity.y * jumpMultiplier;
+       jumpSound.play();
       }
+    }
+    
+    if (!newTouch.down || this.speed === 0) {
+      walkSound.stop();
+    }
+    if ((!this.touchState.left && !this.touchState.right) ||
+        this.sprite.body.velocity.x !== 0 ||
+        newTouch.down) {
+      scrapeSound.stop();
     }
 
     // Check for melee
@@ -222,6 +247,7 @@ var Player = function(game, gravity) {
   this.climbDuration = 1000;
   this.climbStart = {x: 0, y: 0};
   this.climbEnd = {x: 0, y: 0};
+  this.climbJumpSoundPlayed = false;
   this.startClimb = function(ledge, point, duration) {
     this.moveMode = 'c';
     this.climbCounter = 0;
@@ -232,6 +258,8 @@ var Player = function(game, gravity) {
     this.sprite.body.velocity.x = 0;
     this.sprite.body.velocity.y = 0;
     this.sprite.body.allowGravity = false;
+    ledgeSound.play();
+    this.climbJumpSoundPlayed = false;
   };
   this.climb = function() {
     var distance = Phaser.Easing.Back.InOut(this.climbCounter / this.climbDuration);
@@ -245,6 +273,10 @@ var Player = function(game, gravity) {
       this.climbCounter++;
       this.sprite.body.x = distance * this.climbEnd.x + (1 - distance) * this.climbStart.x;
       this.sprite.body.y = distance * this.climbEnd.y + (1 - distance) * this.climbStart.y;
+    }
+    if (this.climbCounter * 4 > this.climbDuration && !this.climbJumpSoundPlayed) {
+      jumpSound.play();
+      this.climbJumpSoundPlayed = true;
     }
   };
   

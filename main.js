@@ -45,6 +45,11 @@ function preload () {
   game.load.audio('explode', ['sounds/explode.ogg']);
   game.load.audio('pong', ['sounds/landing.ogg']);
   game.load.audio('boom', ['sounds/boom.ogg']);
+  game.load.audio('steps', ['sounds/steps_platform.ogg']);
+  game.load.audio('swoosh', ['sounds/swoosh.ogg']);
+  game.load.audio('jump', ['sounds/jump.ogg']);
+  game.load.audio('scrape', ['sounds/scrape.ogg']);
+  game.load.audio('ledge', ['sounds/ledge2.ogg']);
   
   game.load.audio('bgaudio', ['sounds/bg.ogg']);
   
