@@ -16,6 +16,7 @@ var music;
 var glassSound;
 var hitSound;
 var playerHitSound;
+var collectSound;
 
 var muteKey;
 
@@ -50,6 +51,7 @@ function preload () {
   game.load.audio('jump', ['sounds/jump.ogg']);
   game.load.audio('scrape', ['sounds/scrape.ogg']);
   game.load.audio('ledge', ['sounds/ledge2.ogg']);
+  game.load.audio('collect', ['sounds/collect.ogg']);
   
   game.load.audio('bgaudio', ['sounds/bg.ogg']);
   
@@ -67,6 +69,7 @@ function create () {
   glassSound = game.add.audio('glass');
   hitSound = game.add.audio('clang');
   playerHitSound = game.add.audio('pong');
+  collectSound = game.add.audio('collect');
   
   enemies = [];
 
@@ -182,6 +185,7 @@ function grabLedge(playerSprite, ledge) {
 
 function collectChip(player, chip) {
   chip.kill();
+  collectSound.play();
 }
 
 function hitEnemy(melee, enemy) {
