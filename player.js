@@ -223,6 +223,9 @@ var Player = function(game, gravity) {
   this.climb = function() {
     var distance = Phaser.Easing.Back.InOut(this.climbCounter / this.climbDuration);
     if (this.climbCounter >= this.climbDuration) {
+      // Set to end to make sure player ends up on top
+      this.sprite.body.x = this.climbEnd.x;
+      this.sprite.body.y = this.climbEnd.y;
       this.moveMode = 'h';
       this.sprite.body.allowGravity = true;
     } else {

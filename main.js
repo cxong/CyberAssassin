@@ -173,8 +173,8 @@ function collideFloor(player, floor) {
 function grabLedge(playerSprite, ledge) {
   if (ledge.canClimb(playerSprite.body.velocity.x)) {
     var point = ledge.getClimbPoint();
-    var distance = playerSprite.body.y - point.y;
-    player.startClimb(ledge, point, distance * 0.8);
+    var distance = Phaser.Point.distance(playerSprite.body, point);
+    player.startClimb(ledge, point, Math.round(Math.abs(distance * 0.6)));
   }
 }
 
