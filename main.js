@@ -157,6 +157,10 @@ function update() {
   if (!player.sprite.alive) {
     killPlayer();
   }
+  // Kill player if dropped to bottom
+  if ((player.sprite.y + player.sprite.height) >= game.world.bounds.height - 5) {
+    killPlayer();
+  }
 
   // Parallax
   bgSprite.x = game.camera.x * 0.9;
