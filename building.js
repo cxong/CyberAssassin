@@ -90,6 +90,8 @@ var Fixture = function(game, x, y, dir, fixturesGroup) {
     this.sprite.x += this.sprite.width / 2;
   }
   this.sprite.anchor.setTo(0.5, 0);
+  this.sprite.body.width *= 0.4;
+  this.sprite.body.height *= 0.4;
   this.sprite.body.immovable = true;
   if (dir === 'left') {
     this.sprite.scale.x *= -1;
