@@ -11,7 +11,6 @@ var buildings;
 var groups;
 
 var enemies;
-var chips;
 var cursors;
 var music;
 var glassSound;
@@ -37,6 +36,7 @@ function preload () {
   game.load.image('bullet', 'images/bullet.png');
   game.load.spritesheet('shot_indicator', 'images/shot_indicator.png', 32, 32);
   game.load.spritesheet('health', 'images/health.png', 32, 32);
+  game.load.image('arrow', 'images/arrow.png');
   
   game.load.audio('glass', ['sounds/glass.ogg']);
   game.load.audio('laser', ['sounds/laser.ogg']);
@@ -79,29 +79,17 @@ function create () {
     glasses: game.add.group(),
     fixtures: game.add.group(),
     enemies: game.add.group(),
-    bullets: game.add.group()
+    bullets: game.add.group(),
+    chips: game.add.group()
   };
   
   buildings = new Buildings(game, groundY, groups, enemies);
   buildings.build(game, 4);
   
   // The player and its settings
-  player = new Player(game, gravity);
+  player = new Player(game, gravity, groups.chips);
   
   camera = new Camera(game, player);
-  
-  // Collectibles
-  chips = game.add.group();
-  //  Here we'll create 12 of them evenly spaced apart
-  for (i = 0; i < 12; i++)
-  {
-      //  Create a star inside of the 'stars' group
-      var chip = chips.create(i * 70, 0, 'chip');
-      //  Let gravity do its thing
-      chip.body.gravity.y = gravity;
-      //  This just gives each one a slightly random bounce value
-      chip.body.bounce.y = 0.7 + Math.random() * 0.2;
-  }
 }
 
 function update() {
@@ -126,10 +114,9 @@ function update() {
       }
     }
     game.physics.collide(player.sprite, groups.ceilings);
-    game.physics.collide(chips, groups.buildings);
   }
   // Check for player pickups
-  game.physics.overlap(player.sprite, chips, collectChip, null, this);
+  game.physics.overlap(player.sprite, groups.chips, collectChip, null, this);
   // Glass collisions
   game.physics.overlap(player.sprite, groups.glasses, collideGlass);
   // Fixture collisions
