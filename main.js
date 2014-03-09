@@ -96,10 +96,10 @@ function create () {
     ledges: game.add.group(),
     glasses: game.add.group(),
     fixtures: game.add.group(),
+    exit: game.add.group(),
     enemies: game.add.group(),
     bullets: game.add.group(),
-    chips: game.add.group(),
-    exit: game.add.group()
+    chips: game.add.group()
   };
   
   buildings = new Buildings(game, groundY, groups, enemies);
