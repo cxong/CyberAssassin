@@ -40,6 +40,8 @@ function preload () {
   game.load.spritesheet('health', 'images/health.png', 32, 32);
   game.load.image('arrow', 'images/arrow.png');
   game.load.image('blank', 'images/blank.png');
+
+  game.load.spritesheet('enemy_die', 'images/enemy_die.png', 40, 40);
   
   game.load.audio('glass', ['sounds/glass.ogg']);
   game.load.audio('laser', ['sounds/laser.ogg']);
@@ -194,16 +196,24 @@ function collectChip(player, chip) {
 function hitEnemy(melee, enemy) {
   enemy.damage(1);
   var flyMultiplier = 5;
+  var i;
   if (enemy.alive) {
     hitSound.play();
   } else {
-    flyMultiplier = 5;
+    for (i = 0; i < 10; i++) {
+      var enemyDieSprite = game.add.sprite(
+        enemy.x - Math.random()*enemy.width,
+        enemy.y - Math.random()*enemy.height, 'enemy_die');
+      var enemyDieAnimation = enemyDieSprite.animations.add('play');
+      enemyDieAnimation.killOnComplete = true;
+      enemyDieAnimation.play(Math.random()*30 + 30);
+    }
   }
   
   // Combos: check if another enemy is in the vicinity, and move towards them
   var closestEnemy = null;
   var closestDistance = 0;
-  for (var i = 0; i < enemies.length; i++) {
+  for (i = 0; i < enemies.length; i++) {
     if (!enemies[i].sprite.alive) {
       continue;
     }
