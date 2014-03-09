@@ -289,6 +289,9 @@ var Player = function(game, gravity, chipsGroup) {
   this.flyTowards = function(body, flyMultiplier) {
     this.sprite.body.velocity.x = (body.x - this.sprite.body.x) * flyMultiplier;
     this.sprite.body.velocity.y = (body.y - this.sprite.body.y) * flyMultiplier;
+    // Cap velocity
+    this.sprite.body.velocity.x = Math.min(10000, Math.max(-10000, this.sprite.body.velocity.x));
+    this.sprite.body.velocity.y = Math.min(5000, Math.max(-5000, this.sprite.body.velocity.y));
   };
   
   this.die = function() {

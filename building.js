@@ -35,7 +35,7 @@ var Ledge = function(game, x, y, dir, ledgeGroup) {
   };
 };
 
-var Level = function(game, x, y, w, groundY, groups, enemies, placeChip, addExit) {
+var Level = function(game, x, y, w, groundY, groups, enemies, levelNum, placeChip, addExit) {
   // Floors, which the player stands on in horizontal mode
   var floorHeight = 32;
   this.floor = game.add.tileSprite(x, y + levelHeight, w, floorHeight, 'floor');
@@ -87,6 +87,22 @@ var Level = function(game, x, y, w, groundY, groups, enemies, placeChip, addExit
   if (addExit) {
     groups.exit.create(x + w / 2, y + levelHeight - 80, 'door');
   }
+  
+  // Level numbers
+  var style = { font: "32px Arial", fill: "#999999", align: "center" };
+  var text = levelNum + '';
+  if (levelNum < 100) {
+    text = '0' + text;
+  }
+  if (levelNum < 10) {
+    text = '0' + text;
+  }
+  var t = game.add.text(x + 44, y + levelHeight / 2, text, style);
+  t.anchor.setTo(0.5, 0.5);
+  groups.rooms.add(t);
+  t = game.add.text(x + w - 44, y + levelHeight / 2, text, style);
+  t.anchor.setTo(0.5, 0.5);
+  groups.rooms.add(t);
 };
 
 var Fixture = function(game, x, y, dir, fixturesGroup) {
@@ -125,6 +141,7 @@ var Building = function(game, x, w, h, groundY, groups, enemies,
   // Don't place consecutive fixtures otherwise the player can't jump here
   var lastFixtures = { left: false, right: false };
   var i = 0;
+  var totalLevels = Math.floor(h / levelInterval);
   this.chipAdded = false;
   for (var levelY = groundY - h + levelInterval;
        levelY + levelHeight < groundY;
@@ -133,7 +150,7 @@ var Building = function(game, x, w, h, groundY, groups, enemies,
     var percentToBottom = (levelY - (groundY - h)) / h;
     // Always add level on the last height
     if (levelY + levelInterval >= groundY - levelHeight) {
-      new Level(game, x, levelY, w, groundY, groups, enemies, false, addExit);
+      new Level(game, x, levelY, w, groundY, groups, enemies, 0, false, addExit);
     } else {
       var roll = Math.floor(Math.random() * 10);
       if (roll < 6 * percentToBottom) {
@@ -157,15 +174,15 @@ var Building = function(game, x, w, h, groundY, groups, enemies,
         // Add a chip if we're past chipAddPercentHeight height for the building,
         // and if we haven't placed a chip yet
         var placeChip = !this.chipAdded && percentToBottom > chipAddPercentHeight;
-        new Level(game, x, levelY, w, groundY, groups, enemies, placeChip, false);
+        new Level(game, x, levelY, w, groundY, groups, enemies, totalLevels - i, placeChip, false);
         if (placeChip) {
           this.chipAdded = true;
         }
       }
       levelInterval = 300;
       this.fixturesRight.push(lastFixtures.right);
-      i++;
     }
+    i++;
   }
 };
 
