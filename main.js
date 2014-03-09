@@ -20,6 +20,8 @@ var collectSound;
 
 var muteKey;
 
+var resetTimer = 0;
+
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
   game.load.image('building', 'images/building.png');
@@ -42,6 +44,7 @@ function preload () {
   game.load.image('blank', 'images/blank.png');
 
   game.load.spritesheet('enemy_die', 'images/enemy_die.png', 40, 40);
+  game.load.spritesheet('player_die', 'images/player_die.png', 68, 68);
   
   game.load.audio('glass', ['sounds/glass.ogg']);
   game.load.audio('laser', ['sounds/laser.ogg']);
@@ -101,6 +104,14 @@ function create () {
 }
 
 function update() {
+  if (!player.sprite.alive) {
+    resetTimer++;
+    if (resetTimer > 60) {
+      reset();
+    } else {
+      return;
+    }
+  }
   if (player.moveMode === 'c') {
     player.climb();
   } else {
@@ -156,11 +167,11 @@ function update() {
   game.physics.overlap(player.sprite, groups.bullets, hitPlayer);
   
   if (!player.sprite.alive) {
-    killPlayer();
+    killPlayer(player.sprite);
   }
   // Kill player if dropped to bottom
   if ((player.sprite.y + player.sprite.height) >= game.world.bounds.height - 5) {
-    killPlayer();
+    killPlayer(player.sprite);
   }
 
   // Parallax
@@ -235,15 +246,25 @@ function hitPlayer(playerSprite, bullet) {
 }
 
 function killPlayer(playerSprite, killer) {
+  for (var i = 0; i < 10; i++) {
+    var playerDieSprite = game.add.sprite(
+      playerSprite.x - (Math.random() - 0.5)*playerSprite.width*3,
+      playerSprite.y - (Math.random() - 0.5)*playerSprite.height*3,
+      'player_die');
+    var playerDieAnimation = playerDieSprite.animations.add('play');
+    playerDieAnimation.killOnComplete = true;
+    playerDieAnimation.play(Math.random()*10 + 10);
+  }
   player.sprite.kill();
+  player.die();
+}
+
+function reset() {
+  resetTimer = 0;
   for (var i = 0; i < enemies.length; i++) {
     enemies[i].kill(false);
   }
   enemies.length = 0;
-  reset();
-}
-
-function reset() {
   player.reset();
   buildings.reset(game);
 }

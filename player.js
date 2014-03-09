@@ -291,8 +291,13 @@ var Player = function(game, gravity, chipsGroup) {
     this.sprite.body.velocity.y = (body.y - this.sprite.body.y) * flyMultiplier;
   };
   
-  this.reset = function() {
+  this.die = function() {
     dieSound.play();
+    walkSound.stop();
+    scrapeSound.stop();
+  };
+  
+  this.reset = function() {
     this.sprite.reset(32, 150, maxHealth);
     this.speed = 0;
     this.healthIndicator.show(this.sprite);
