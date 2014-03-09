@@ -66,6 +66,11 @@ var Level = function(game, x, y, w, groundY, groups, enemies, levelNum, placeChi
   this.ledgeLeft = new Ledge(game, x, y + levelHeight, 'left', groups.ledges);
   this.ledgeRight = new Ledge(game, x + w, y + levelHeight, 'right', groups.ledges);
   
+  // Place exit
+  if (addExit) {
+    groups.exit.create(x + w / 2, y + levelHeight - 80, 'door');
+  }
+  
   // Randomly add enemies in rooms
   var numLocations = 6;
   var threshold = y * 5 / groundY;
@@ -81,11 +86,6 @@ var Level = function(game, x, y, w, groundY, groups, enemies, levelNum, placeChi
   // Add chip
   if (placeChip) {
     groups.chips.create(x + w / 2, y + levelHeight - 32, 'chip');
-  }
-  
-  // Place exit
-  if (addExit) {
-    groups.exit.create(x + w / 2, y + levelHeight - 80, 'door');
   }
   
   // Level numbers
