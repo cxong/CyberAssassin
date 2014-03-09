@@ -111,6 +111,7 @@ var Player = function(game, gravity, chipsGroup) {
           this.touchState.left = false;
           this.lastDir = 'right';
           pushSound.play();
+          this.speed = maxSpeed;
         } else if (cursors.left.isDown) {
           //this.sprite.body.velocity.x = -100;
         }
@@ -122,6 +123,7 @@ var Player = function(game, gravity, chipsGroup) {
           this.touchState.right = false;
           this.lastDir = 'left';
           pushSound.play();
+          this.speed = -maxSpeed;
         } else if (cursors.right.isDown) {
           //this.sprite.body.velocity.x = 100;
         }
