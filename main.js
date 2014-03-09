@@ -37,7 +37,8 @@ function preload () {
   game.load.image('room', 'images/room.png');
   game.load.image('glass', 'images/glass.png');
   game.load.image('door', 'images/door.png');
-  game.load.image('fixture', 'images/grate.png');
+  game.load.image('fixture0', 'images/grate0.png');
+  game.load.image('fixture1', 'images/grate1.png');
   
   game.load.spritesheet('player', 'images/dude.png', 32, 48);
   game.load.spritesheet('enemy', 'images/enemy.png', 64, 64);

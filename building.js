@@ -106,7 +106,7 @@ var Level = function(game, x, y, w, groundY, groups, enemies, levelNum, placeChi
 };
 
 var Fixture = function(game, x, y, dir, fixturesGroup) {
-  this.sprite = game.add.sprite(x, y, 'fixture');
+  this.sprite = game.add.sprite(x, y, 'fixture' + Math.floor(Math.random() * 2));
    if (dir === 'left') {
     this.sprite.x -= this.sprite.width / 2;
   } else {
