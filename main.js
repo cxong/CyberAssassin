@@ -18,6 +18,8 @@ var hitSound;
 var playerHitSound;
 var collectSound;
 
+var glassEmitter;
+
 var muteKey;
 
 var resetTimer = 0;
@@ -42,6 +44,8 @@ function preload () {
   game.load.spritesheet('health', 'images/health.png', 32, 32);
   game.load.image('arrow', 'images/arrow.png');
   game.load.image('blank', 'images/blank.png');
+  game.load.image('shard', 'images/shard.png');
+  game.load.image('spark', 'images/spark.png');
 
   game.load.spritesheet('enemy_die', 'images/enemy_die.png', 40, 40);
   game.load.spritesheet('player_die', 'images/player_die.png', 68, 68);
@@ -77,6 +81,10 @@ function create () {
   hitSound = game.add.audio('clang');
   playerHitSound = game.add.audio('pong');
   collectSound = game.add.audio('collect');
+  
+  glassEmitter = game.add.emitter(0, 0, 200);
+  glassEmitter.makeParticles('shard');
+  glassEmitter.gravity = gravity * 0.5;
   
   enemies = [];
 
@@ -185,6 +193,15 @@ function overlapRoom(playerSprite, room) {
 
 function collideGlass(playerSprite, glass) {
   glassSound.play();
+  glassEmitter.x = glass.x + glass.width / 2;
+  glassEmitter.y = playerSprite.y + playerSprite.height / 2;
+  if (player.moveMode !== 'c') {
+    glassEmitter.setXSpeed(playerSprite.body.velocity.x,
+                           playerSprite.body.velocity.x * 1.4);
+  } else {
+    glassEmitter.setXSpeed(-100.0, 100.0);
+  }
+  glassEmitter.start(true, 700, null, 40);
   glass.kill();
 }
 
