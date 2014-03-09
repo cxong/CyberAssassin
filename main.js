@@ -1,6 +1,7 @@
 var game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 20; // default, no-air-resistance gravity
 var groundY = 15600;
+var numBuildings = 4;
 var camera;
 var bgSprite;
 var player;
@@ -17,8 +18,10 @@ var glassSound;
 var hitSound;
 var playerHitSound;
 var collectSound;
+var numCollected = 0;
 var alarmSound;
 var alarmSoundPlayed = false;
+var exitSound;
 
 var glassEmitter;
 
@@ -28,6 +31,8 @@ var resetTimer = 0;
 var timerStart = 3000;
 var timer = timerStart;
 var timerText;
+
+var completed = false;
 
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
@@ -70,6 +75,7 @@ function preload () {
   game.load.audio('ledge', ['sounds/ledge2.ogg']);
   game.load.audio('collect', ['sounds/collect.ogg']);
   game.load.audio('alarm', ['sounds/alarm_0.ogg']);
+  game.load.audio('exit', ['sounds/exit.ogg']);
   
   game.load.audio('bgaudio', ['sounds/bg.ogg']);
   
@@ -82,13 +88,14 @@ function create () {
   bgSprite.scale.setTo(3, 3);
   
   music = game.add.audio('bgaudio');
-  music.play('', 0, 0.5, true);
-  muteKey.onDown.add(function() { music.volume = 0.5 - music.volume; }, this);
+  music.play('', 0, 0.4, true);
+  muteKey.onDown.add(function() { music.volume = 0.4 - music.volume; }, this);
   glassSound = game.add.audio('glass');
   hitSound = game.add.audio('clang');
   playerHitSound = game.add.audio('pong');
   collectSound = game.add.audio('collect');
   alarmSound = game.add.audio('alarm');
+  exitSound = game.add.audio('exit');
   
   enemies = [];
 
@@ -103,11 +110,12 @@ function create () {
     exit: game.add.group(),
     enemies: game.add.group(),
     bullets: game.add.group(),
-    chips: game.add.group()
+    chips: game.add.group(),
+    screen: game.add.group()
   };
   
   buildings = new Buildings(game, groundY, groups, enemies);
-  buildings.build(game, 4);
+  buildings.build(game, numBuildings);
   
   glassEmitter = game.add.emitter(0, 0, 200);
   glassEmitter.makeParticles('shard');
@@ -124,6 +132,9 @@ function create () {
 }
 
 function update() {
+  if (completed) {
+    return;
+  }
   if (!player.sprite.alive) {
     resetTimer++;
     if (resetTimer > 60) {
@@ -182,7 +193,7 @@ function update() {
     // Change style
     var style = { font: "48px Arial", fill: "#ff6666", align: "center" };
     timerText.destroy();
-    timerText = game.add.text(game.width / 2, 64, timerText, style);
+    timerText = game.add.text(game.width / 2, 64, timer, style);
     alarmSoundPlayed = true;
   }
   timerText.setText(timer);
@@ -214,6 +225,9 @@ function update() {
   if ((player.sprite.y + player.sprite.height) >= game.world.bounds.height - 5) {
     killPlayer(player.sprite);
   }
+  
+  // Win condition, reached exit
+  game.physics.overlap(player.sprite, groups.exit, winGame);
 
   // Parallax
   bgSprite.x = game.camera.x * 0.9;
@@ -252,6 +266,7 @@ function grabLedge(playerSprite, ledge) {
 function collectChip(player, chip) {
   chip.kill();
   collectSound.play();
+  numCollected++;
 }
 
 function hitEnemy(melee, enemy) {
@@ -319,6 +334,8 @@ function reset() {
   player.reset();
   buildings.reset(game);
   makeText();
+  groups.screen.removeAll();
+  numCollected = 0;
 }
 
 function makeText() {
@@ -329,4 +346,18 @@ function makeText() {
   }
   timerText = game.add.text(game.width / 2, 64, timerText, style);
   timerText.anchor.setTo(0.5, 0.5);
+}
+
+function winGame() {
+  completed = true;
+  exitSound.play();
+  player.freeze();
+  
+  var style = { font: "48px Arial", fill: "#ffffff", align: "center" };
+  var text = "Time: " + timer +
+    "\nChips: " + numCollected +
+    "\nTotal: " + Math.floor(timer * (1 + numCollected * 0.2));
+  timerText = game.add.text(game.camera.x + game.width / 2, game.camera.y + game.height / 2, text, style);
+  timerText.anchor.setTo(0.5, 0.5);
+  groups.screen.add(timerText);
 }

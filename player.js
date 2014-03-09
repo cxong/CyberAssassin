@@ -312,13 +312,22 @@ var Player = function(game, gravity, chipsGroup) {
   
   this.die = function() {
     dieSound.play();
-    walkSound.stop();
-    scrapeSound.stop();
+    this.freeze();
   };
   
   this.reset = function() {
     this.sprite.reset(32, 150, maxHealth);
+    this.sprite.body.allowGravity = true;
     this.speed = 0;
     this.healthIndicator.show(this.sprite);
+  };
+  
+  this.freeze = function() {
+    walkSound.stop();
+    scrapeSound.stop();
+    this.sprite.animations.stop();
+    this.sprite.body.velocity.x = 0;
+    this.sprite.body.velocity.y = 0;
+    this.sprite.body.allowGravity = false;
   };
 };
