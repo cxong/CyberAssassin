@@ -354,9 +354,14 @@ function winGame() {
   player.freeze();
   
   var style = { font: "48px Arial", fill: "#ffffff", align: "center" };
+  var score = Math.floor(timer * (1 + numCollected * 0.2));
+  if (score > getHighScore) {
+    setHighScore(score);
+  }
   var text = "Time: " + timer +
     "\nChips: " + numCollected +
-    "\nTotal: " + Math.floor(timer * (1 + numCollected * 0.2));
+    "\nTotal: " + score +
+    "\nHigh: " + getHighScore();
   timerText = game.add.text(game.camera.x + game.width / 2, game.camera.y + game.height / 2, text, style);
   timerText.anchor.setTo(0.5, 0.5);
   groups.screen.add(timerText);
