@@ -107,6 +107,8 @@ function create () {
   glassEmitter = game.add.emitter(0, 0, 200);
   glassEmitter.makeParticles('shard');
   glassEmitter.gravity = gravity * 0.5;
+  glassEmitter.bounce.setTo(0.5, 0.5);
+  glassEmitter.angularDrag = 30;
   
   // Timer text
   var style = { font: "48px Arial", fill: "#aaffaa", align: "center" };
@@ -160,6 +162,9 @@ function update() {
   if (player.moveMode !== 'c') {
     player.handleInput(game, cursors);
   }
+  
+  game.physics.collide(glassEmitter, groups.floors);
+  game.physics.collide(glassEmitter, groups.ceilings);
 
   camera.update();
   player.update(groups.chips, groups.exit);
@@ -212,14 +217,14 @@ function overlapRoom(playerSprite, room) {
 function collideGlass(playerSprite, glass) {
   glassSound.play();
   glassEmitter.x = glass.x + glass.width / 2;
-  glassEmitter.y = playerSprite.y + playerSprite.height / 2;
+  glassEmitter.y = playerSprite.y;
   if (player.moveMode !== 'c') {
     glassEmitter.setXSpeed(playerSprite.body.velocity.x * 0.8,
                            playerSprite.body.velocity.x * 1.3);
   } else {
     glassEmitter.setXSpeed(-100.0, 100.0);
   }
-  glassEmitter.start(true, 700, null, 40);
+  glassEmitter.start(true, 3000, null, 30);
   glass.kill();
 }
 
