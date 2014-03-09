@@ -122,9 +122,10 @@ var Building = function(game, x, w, h, groundY, groups, enemies,
   for (var levelY = groundY - h + levelInterval;
        levelY + levelHeight < groundY;
        levelY += levelInterval) {
-    // three fixtures for every level
-    var roll = Math.floor(Math.random() * 4);
-    if (roll < 3) {
+    // More levels and empty gaps near top
+    var percentToBottom = (levelY - (groundY - h)) / h;
+    var roll = Math.floor(Math.random() * 10);
+    if (roll < 6 * percentToBottom) {
       // Fixtures
       // Make sure there's no fixture on the right of the last building
       // for us to place a fixture on the left of this building
@@ -141,10 +142,10 @@ var Building = function(game, x, w, h, groundY, groups, enemies,
       } else {
         lastFixtures.right = false;
       }
-    } else {
+    } else if (roll % 2) {
       // Add a chip if we're past chipAddPercentHeight height for the building,
       // and if we haven't placed a chip yet
-      var placeChip = !this.chipAdded && (levelY - (groundY - h)) / h > chipAddPercentHeight;
+      var placeChip = !this.chipAdded && percentToBottom > chipAddPercentHeight;
       new Level(game, x, levelY, w, groundY, groups, enemies, placeChip);
       if (placeChip) {
         this.chipAdded = true;
