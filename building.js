@@ -3,6 +3,7 @@ var levelHeight = 100;
 
 var Window = function(game, x, y, h, glassGroup) {
   this.sprite = game.add.tileSprite(x, y, windowWidth, h, 'glass');
+  this.sprite.anchor.setTo(0.5, 0);
   this.sprite.body.width = windowWidth;
   this.sprite.body.height = h;
   glassGroup.add(this.sprite);
@@ -57,8 +58,9 @@ var Level = function(game, x, y, w, groundY, groups, enemies, placeChip) {
   groups.rooms.add(this.room);
   
   // Windows; break them by running into them, otherwise nonfunctional
-  this.windowLeft = new Window(game, x, y, levelHeight, groups.glasses);
-  this.windowRight = new Window(game, x + w - windowWidth, y, levelHeight, groups.glasses);
+  var windowLeft = new Window(game, x + windowWidth, y, levelHeight, groups.glasses);
+  windowLeft.sprite.scale.x *= -1;
+  var windowRight = new Window(game, x + w - windowWidth, y, levelHeight, groups.glasses);
   
   // Ledges: if grabbed on, will climb into the room above
   this.ledgeLeft = new Ledge(game, x, y + levelHeight, 'left', groups.ledges);
