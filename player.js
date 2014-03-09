@@ -65,6 +65,8 @@ var Player = function(game, gravity, chipsGroup) {
   // Melee attack sprite
   // Normally inactive, activated using melee key
   this.meleeSprite = game.add.sprite(0, 0, 'melee');
+  var meleeAnimation = this.meleeSprite.animations.add('play');
+  meleeAnimation.killOnComplete = true;
   this.meleeSprite.anchor.setTo(0.5, 0.5);
   this.meleeSprite.kill();
   var meleeSound = game.add.audio('swish');
@@ -195,11 +197,8 @@ var Player = function(game, gravity, chipsGroup) {
     if (game.input.keyboard.isDown(Phaser.Keyboard.Z)) {
       if (this.meleeCounter <= 0) {
         this.melee();
-      } else {
-        this.meleeSprite.kill();
       }
     } else {
-      this.meleeSprite.kill();
       this.meleeCounter = 0;
     }
   };
@@ -215,6 +214,7 @@ var Player = function(game, gravity, chipsGroup) {
       pos.x += this.sprite.width / 2;
     }
     this.meleeSprite.reset(pos.x, pos.y, 1);
+    meleeAnimation.play('play');
     meleeSound.play();
     this.meleeCounter = meleeCooldown;
     // Slow down when attacking

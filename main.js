@@ -33,7 +33,7 @@ function preload () {
   
   game.load.spritesheet('player', 'images/dude.png', 32, 48);
   game.load.spritesheet('enemy', 'images/enemy.png', 64, 64);
-  game.load.image('melee', 'images/melee.png');
+  game.load.spritesheet('melee', 'images/melee.png', 68, 64);
   game.load.image('bullet', 'images/bullet.png');
   game.load.spritesheet('shot_indicator', 'images/shot_indicator.png', 32, 32);
   game.load.spritesheet('health', 'images/health.png', 32, 32);
