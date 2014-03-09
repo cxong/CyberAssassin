@@ -40,6 +40,10 @@ var Player = function(game, gravity, chipsGroup) {
   var scrapeSound = game.add.audio('scrape');
   var ledgeSound = game.add.audio('ledge');
   
+  var scrapeEmitter = game.add.emitter(0, 0, 200);
+  scrapeEmitter.makeParticles('spark');
+  scrapeEmitter.gravity = gravity * 0.2;
+  
   
   // Note: need to track running speed manually because ground collisions
   // slow the player down
@@ -131,6 +135,18 @@ var Player = function(game, gravity, chipsGroup) {
       
       if (this.sprite.body.velocity.x === 0 && !scrapeSound.isPlaying) {
         scrapeSound.play('', 0, 0.2, true);
+      }
+
+      // Sparks
+      if (scrapeSound.isPlaying) {
+        scrapeEmitter.x = this.sprite.x + (this.touchState.left ? 0 : this.sprite.width);
+        scrapeEmitter.y = this.sprite.y + this.sprite.height + 16;
+        scrapeEmitter.start(true, 300, null, 3);
+        if (this.touchState.left) {
+          scrapeEmitter.setXSpeed(0, 50.0);
+        } else {
+          scrapeEmitter.setXSpeed(-50, 0);
+        }
       }
     } else if (newTouch.down) {
       this.sprite.body.velocity.x = 0;
