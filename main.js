@@ -17,6 +17,8 @@ var glassSound;
 var hitSound;
 var playerHitSound;
 var collectSound;
+var alarmSound;
+var alarmSoundPlayed = false;
 
 var glassEmitter;
 
@@ -67,6 +69,7 @@ function preload () {
   game.load.audio('scrape', ['sounds/scrape.ogg']);
   game.load.audio('ledge', ['sounds/ledge2.ogg']);
   game.load.audio('collect', ['sounds/collect.ogg']);
+  game.load.audio('alarm', ['sounds/alarm_0.ogg']);
   
   game.load.audio('bgaudio', ['sounds/bg.ogg']);
   
@@ -85,6 +88,7 @@ function create () {
   hitSound = game.add.audio('clang');
   playerHitSound = game.add.audio('pong');
   collectSound = game.add.audio('collect');
+  alarmSound = game.add.audio('alarm');
   
   enemies = [];
 
@@ -111,15 +115,12 @@ function create () {
   glassEmitter.bounce.setTo(0.5, 0.5);
   glassEmitter.angularDrag = 30;
   
-  // Timer text
-  var style = { font: "48px Arial", fill: "#aaffaa", align: "center" };
-  timerText = game.add.text(game.width / 2, 64, timerText, style);
-  timerText.anchor.setTo(0.5, 0.5);
-  
   // The player and its settings
   player = new Player(game, gravity, groups.chips);
   
   camera = new Camera(game, player);
+  
+  makeText();
 }
 
 function update() {
@@ -175,6 +176,14 @@ function update() {
   if (timer <= 0) {
     timer = 0;
     killPlayer(player.sprite, null);
+  } else if (!alarmSoundPlayed && timer < timerStart * 0.1) {
+    // Play warning if running out of time
+    alarmSound.play();
+    // Change style
+    var style = { font: "48px Arial", fill: "#ff6666", align: "center" };
+    timerText.destroy();
+    timerText = game.add.text(game.width / 2, 64, timerText, style);
+    alarmSoundPlayed = true;
   }
   timerText.setText(timer);
   timerText.x = game.camera.x + game.width / 2;
@@ -309,4 +318,15 @@ function reset() {
   enemies.length = 0;
   player.reset();
   buildings.reset(game);
+  makeText();
+}
+
+function makeText() {
+  // Timer text
+  var style = { font: "48px Arial", fill: "#aaffaa", align: "center" };
+  if (timerText) {
+    timerText.destroy();
+  }
+  timerText = game.add.text(game.width / 2, 64, timerText, style);
+  timerText.anchor.setTo(0.5, 0.5);
 }
