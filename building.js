@@ -89,7 +89,7 @@ var Level = function(game, x, y, w, groundY, groups, enemies, levelNum, placeChi
   }
   
   // Level numbers
-  var style = { font: "32px Arial", fill: "#999999", align: "center" };
+  var style = { font: "32px Arial", fill: "#777777", align: "center" };
   var text = levelNum + '';
   if (levelNum < 100) {
     text = '0' + text;

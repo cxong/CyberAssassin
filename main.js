@@ -85,10 +85,6 @@ function create () {
   playerHitSound = game.add.audio('pong');
   collectSound = game.add.audio('collect');
   
-  glassEmitter = game.add.emitter(0, 0, 200);
-  glassEmitter.makeParticles('shard');
-  glassEmitter.gravity = gravity * 0.5;
-  
   enemies = [];
 
   groups = {
@@ -107,6 +103,10 @@ function create () {
   
   buildings = new Buildings(game, groundY, groups, enemies);
   buildings.build(game, 4);
+  
+  glassEmitter = game.add.emitter(0, 0, 200);
+  glassEmitter.makeParticles('shard');
+  glassEmitter.gravity = gravity * 0.5;
   
   // Timer text
   var style = { font: "48px Arial", fill: "#aaffaa", align: "center" };
@@ -214,8 +214,8 @@ function collideGlass(playerSprite, glass) {
   glassEmitter.x = glass.x + glass.width / 2;
   glassEmitter.y = playerSprite.y + playerSprite.height / 2;
   if (player.moveMode !== 'c') {
-    glassEmitter.setXSpeed(playerSprite.body.velocity.x,
-                           playerSprite.body.velocity.x * 1.4);
+    glassEmitter.setXSpeed(playerSprite.body.velocity.x * 0.8,
+                           playerSprite.body.velocity.x * 1.3);
   } else {
     glassEmitter.setXSpeed(-100.0, 100.0);
   }
