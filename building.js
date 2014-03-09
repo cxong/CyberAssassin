@@ -10,9 +10,9 @@ var Window = function(game, x, y, h, glassGroup) {
 
 var Ledge = function(game, x, y, dir, ledgeGroup) {
   var ledgeWidth = 32;
-  var ledgeHeight = 32;
+  var ledgeHeight = 48;
   this.sprite = game.add.tileSprite(
-    x - ledgeWidth / 2, y, ledgeWidth, ledgeHeight, 'ceiling');
+    x - ledgeWidth / 2, y - ledgeHeight * 0.25, ledgeWidth, ledgeHeight, 'ceiling');
   this.sprite.body.width = ledgeWidth;
   this.sprite.body.height = ledgeHeight;
   ledgeGroup.add(this.sprite);
@@ -25,7 +25,7 @@ var Ledge = function(game, x, y, dir, ledgeGroup) {
     }
   };
   this.sprite.getClimbPoint = function() {
-    var y = this.body.y - this.body.height;
+    var y = this.body.y - this.body.height * 0.5;
     if (this.dir === 'left') {
       return new Phaser.Point(this.body.x + this.body.width, y);
     } else {
