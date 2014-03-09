@@ -1,6 +1,6 @@
 var game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 20; // default, no-air-resistance gravity
-var groundY = 15300;
+var groundY = 15600;
 var camera;
 var bgSprite;
 var player;
@@ -23,7 +23,7 @@ var glassEmitter;
 var muteKey;
 
 var resetTimer = 0;
-var timerStart = 5000;
+var timerStart = 3000;
 var timer = timerStart;
 var timerText;
 

@@ -132,7 +132,7 @@ var Building = function(game, x, w, h, groundY, groups, enemies,
   this.sprite.body.immovable = true;
   
   // Add levels and fixtures at intervals
-  var levelInterval = 150;
+  var levelInterval = 300;
   // Track the fixtures we've placed on the right
   // This is to prevent placing fixtures at the same level on the left of the next building
   // The player can't jump through those
@@ -141,9 +141,9 @@ var Building = function(game, x, w, h, groundY, groups, enemies,
   // Don't place consecutive fixtures otherwise the player can't jump here
   var lastFixtures = { left: false, right: false };
   var i = 0;
-  var totalLevels = Math.floor(h / levelInterval);
+  var totalLevels = Math.floor(h / levelInterval) - 1;
   this.chipAdded = false;
-  for (var levelY = groundY - h + levelInterval;
+  for (var levelY = groundY - h + 150;
        levelY + levelHeight < groundY;
        levelY += levelInterval) {
     // More levels and empty gaps near top
@@ -179,7 +179,6 @@ var Building = function(game, x, w, h, groundY, groups, enemies,
           this.chipAdded = true;
         }
       }
-      levelInterval = 300;
       this.fixturesRight.push(lastFixtures.right);
     }
     i++;
