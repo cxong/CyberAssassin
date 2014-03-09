@@ -29,6 +29,7 @@ function preload () {
   game.load.image('ceiling', 'images/ceiling.png');
   game.load.image('room', 'images/room.png');
   game.load.image('glass', 'images/glass.png');
+  game.load.image('door', 'images/door.png');
   game.load.image('fixture', 'images/grate.png');
   
   game.load.spritesheet('player', 'images/dude.png', 32, 48);
@@ -84,7 +85,8 @@ function create () {
     fixtures: game.add.group(),
     enemies: game.add.group(),
     bullets: game.add.group(),
-    chips: game.add.group()
+    chips: game.add.group(),
+    exit: game.add.group()
   };
   
   buildings = new Buildings(game, groundY, groups, enemies);
@@ -131,7 +133,7 @@ function update() {
   }
 
   camera.update();
-  player.update(groups.chips);
+  player.update(groups.chips, groups.exit);
 
   for (var i = 0; i < enemies.length; i++) {
     if (player.meleeSprite.alive) {

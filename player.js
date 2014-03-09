@@ -222,7 +222,7 @@ var Player = function(game, gravity, chipsGroup) {
   };
   
   this.chipCompass = new Compass(game);
-  this.update = function(chipsGroup) {
+  this.update = function(chipsGroup, exit) {
     // Cap Y velocity so we don't fall so fast
     this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, maxYVel);
     
@@ -230,7 +230,7 @@ var Player = function(game, gravity, chipsGroup) {
     this.healthIndicator.setPosition(this.sprite);
     
     // Update the compass
-    this.chipCompass.update(this.sprite, chipsGroup);
+    this.chipCompass.update(this.sprite, chipsGroup, exit);
     
     this.meleeCounter--;
   };
