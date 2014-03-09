@@ -23,6 +23,9 @@ var glassEmitter;
 var muteKey;
 
 var resetTimer = 0;
+var timerStart = 5000;
+var timer = timerStart;
+var timerText;
 
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
@@ -105,6 +108,11 @@ function create () {
   buildings = new Buildings(game, groundY, groups, enemies);
   buildings.build(game, 4);
   
+  // Timer text
+  var style = { font: "48px Arial", fill: "#aaffaa", align: "center" };
+  timerText = game.add.text(game.width / 2, 64, timerText, style);
+  timerText.anchor.setTo(0.5, 0.5);
+  
   // The player and its settings
   player = new Player(game, gravity, groups.chips);
   
@@ -155,6 +163,16 @@ function update() {
 
   camera.update();
   player.update(groups.chips, groups.exit);
+
+  // Update timer after camera so we follow properly
+  timer--;
+  if (timer <= 0) {
+    timer = 0;
+    killPlayer(player.sprite, null);
+  }
+  timerText.setText(timer);
+  timerText.x = game.camera.x + game.width / 2;
+  timerText.y = game.camera.y + 64;
 
   for (var i = 0; i < enemies.length; i++) {
     if (player.meleeSprite.alive) {
@@ -278,6 +296,7 @@ function killPlayer(playerSprite, killer) {
 
 function reset() {
   resetTimer = 0;
+  timer = timerStart;
   for (var i = 0; i < enemies.length; i++) {
     enemies[i].kill(false);
   }
