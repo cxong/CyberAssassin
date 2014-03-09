@@ -22,7 +22,7 @@ var muteKey;
 
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
-  game.load.image('building', 'images/05muronero.jpg');
+  game.load.image('building', 'images/building.png');
   game.load.image('chip', 'images/chip.png');
   
   game.load.image('floor', 'images/floor.png');
