@@ -13,7 +13,7 @@ var Ledge = function(game, x, y, dir, ledgeGroup) {
   var ledgeWidth = 32;
   var ledgeHeight = 48;
   this.sprite = game.add.tileSprite(
-    x - ledgeWidth / 2, y - ledgeHeight * 0.25, ledgeWidth, ledgeHeight, 'ceiling');
+    x - ledgeWidth / 2, y - ledgeHeight * 0.25, ledgeWidth, ledgeHeight, 'blank');
   this.sprite.body.width = ledgeWidth;
   this.sprite.body.height = ledgeHeight;
   ledgeGroup.add(this.sprite);
@@ -37,7 +37,7 @@ var Ledge = function(game, x, y, dir, ledgeGroup) {
 
 var Level = function(game, x, y, w, groundY, groups, enemies, placeChip) {
   // Floors, which the player stands on in horizontal mode
-  var floorHeight = 16;
+  var floorHeight = 32;
   this.floor = game.add.tileSprite(x, y + levelHeight, w, floorHeight, 'floor');
   this.floor.body.width = w;
   this.floor.body.height = floorHeight;
@@ -45,7 +45,7 @@ var Level = function(game, x, y, w, groundY, groups, enemies, placeChip) {
   groups.floors.add(this.floor);
   
   // Ceiling; decorational only
-  var ceilingHeight = 16;
+  var ceilingHeight = 32;
   this.ceiling = game.add.tileSprite(x, y - ceilingHeight, w, ceilingHeight, 'ceiling');
   this.ceiling.body.immovable = true;
   groups.ceilings.add(this.ceiling);

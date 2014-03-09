@@ -38,6 +38,7 @@ function preload () {
   game.load.spritesheet('shot_indicator', 'images/shot_indicator.png', 32, 32);
   game.load.spritesheet('health', 'images/health.png', 32, 32);
   game.load.image('arrow', 'images/arrow.png');
+  game.load.image('blank', 'images/blank.png');
   
   game.load.audio('glass', ['sounds/glass.ogg']);
   game.load.audio('laser', ['sounds/laser.ogg']);
