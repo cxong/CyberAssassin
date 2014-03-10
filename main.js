@@ -1,7 +1,7 @@
 var game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 20; // default, no-air-resistance gravity
-var groundY = 1000;
-var numBuildings = 2;
+var groundY = 8550;
+var numBuildings = 3;
 var camera;
 var bgSprite;
 var player;
@@ -31,16 +31,17 @@ var resetTimer = 0;
 var timerStart = 2500;
 var timer = timerStart;
 var timerText;
+var startbg;
 
 var started = false;
 var completed = false;
 var completeTimer = 0;
-var startText;
 
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
 
   game.load.image('score', 'images/score.png');
+  game.load.image('start', 'images/start.png');
   
   game.load.image('building', 'images/building.png');
   game.load.image('chip', 'images/chip.png');
@@ -135,15 +136,10 @@ function create () {
   
   makeText();
   
-  // Starting text
-  var text = "Left/right: run" + 
-    "\nUp: jump" +
-    "\nZ: attack" +
-    "\n\nPress Z to start";
-  var style = { font: "48px Arial", fill: "#ffffff", align: "center" };
-  startText = game.add.text(game.camera.x + game.width / 2, game.camera.y + game.height / 2, text, style);
-  startText.anchor.setTo(0.5, 0.5);
-  groups.screen.add(startText);
+  // Starting screen
+  startbg = game.add.sprite(game.camera.x + game.width / 2, game.camera.y + game.height / 2, 'start');
+  startbg.anchor.setTo(0.5, 0.5);
+  groups.screen.add(startbg);
   player.freeze();
 }
 
@@ -153,7 +149,7 @@ function update() {
     completeTimer++;
     if (completeTimer > 60 && game.input.keyboard.isDown(Phaser.Keyboard.Z)) {
       started = true;
-      startText.destroy();
+      startbg.destroy();
       player.sprite.body.allowGravity = true;
     }
     return;
