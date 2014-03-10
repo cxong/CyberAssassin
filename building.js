@@ -141,15 +141,15 @@ var Building = function(game, x, w, h, groundY, groups, enemies,
   // Don't place consecutive fixtures otherwise the player can't jump here
   var lastFixtures = { left: false, right: false };
   var i = 0;
-  var totalLevels = Math.floor(h / levelInterval) - 1;
+  var totalLevels = Math.floor(h / levelInterval) - 2;
   this.chipAdded = false;
   for (var levelY = groundY - h + 150;
-       levelY + levelHeight < groundY;
+       levelY + levelHeight < groundY - levelInterval;
        levelY += levelInterval) {
     // More levels and empty gaps near top
     var percentToBottom = (levelY - (groundY - h)) / h;
     // Always add level on the last height
-    if (levelY + levelInterval >= groundY - levelHeight) {
+    if (levelY + levelInterval >= groundY - levelHeight * 2) {
       new Level(game, x, levelY, w, groundY, groups, enemies, 0, false, addExit);
     } else {
       var roll = Math.floor(Math.random() * 10);

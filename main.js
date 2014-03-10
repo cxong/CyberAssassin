@@ -1,6 +1,6 @@
 var game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 20; // default, no-air-resistance gravity
-var groundY = 8500;
+var groundY = 8550;
 var numBuildings = 3;
 var camera;
 var bgSprite;
