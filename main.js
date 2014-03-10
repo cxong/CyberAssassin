@@ -216,13 +216,14 @@ function update() {
   if (timer <= 0) {
     timer = 0;
     killPlayer(player.sprite, null);
-  } else if (!alarmSoundPlayed && timer < timerStart * 0.1) {
+  } else if (!alarmSoundPlayed && timer < timerStart * 0.2) {
     // Play warning if running out of time
     alarmSound.play();
     // Change style
     var style = { font: "48px Arial", fill: "#ff6666", align: "center" };
     timerText.destroy();
     timerText = game.add.text(game.width / 2, 64, timer, style);
+    timerText.anchor.setTo(0.5, 0.5);
     alarmSoundPlayed = true;
   }
   timerText.setText(timer);
