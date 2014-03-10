@@ -1,7 +1,7 @@
 var game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 20; // default, no-air-resistance gravity
-var groundY = 8550;
-var numBuildings = 3;
+var groundY = 1000;
+var numBuildings = 2;
 var camera;
 var bgSprite;
 var player;
@@ -39,6 +39,8 @@ var startText;
 
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
+
+  game.load.image('score', 'images/score.png');
   
   game.load.image('building', 'images/building.png');
   game.load.image('chip', 'images/chip.png');
@@ -383,18 +385,18 @@ function winGame() {
   completed = true;
   exitSound.play();
   player.freeze();
-  
-  var style = { font: "48px Arial", fill: "#ffffff", align: "center" };
+
+  var scorebg = game.add.sprite(game.camera.x + game.width / 2, game.camera.y + game.height / 2, 'score');
+  scorebg.anchor.setTo(0.5, 0.5);
+  groups.screen.add(scorebg);
   var score = Math.floor(timer * (1 + numCollected));
   if (score > getHighScore) {
     setHighScore(score);
   }
-  var text = "Time: " + timer +
-    "\nChips: " + numCollected +
-    "\nTotal: " + score +
-    "\nHigh: " + getHighScore() +
-    "\n\nPress Z to restart";
+  var text = "   " + timer + "                              " + numCollected +
+    "\n\n" + "   " + score + "                              " + getHighScore() + "\n\n\n";
   timerText.destroy();
+  var style = { font: "16px Arial", fill: "#ffffff", align: "center" };
   timerText = game.add.text(game.camera.x + game.width / 2, game.camera.y + game.height / 2, text, style);
   timerText.anchor.setTo(0.5, 0.5);
   groups.screen.add(timerText);
