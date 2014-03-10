@@ -11,7 +11,7 @@ var HealthIndicator = function(game, x, y) {
   var regenSpeed = 100;
   this.showCounter = 0;
   this.setPosition = function(playerSprite) {
-    this.sprite.x = playerSprite.x + playerSprite.width / 2;
+    this.sprite.x = playerSprite.x;
     this.sprite.y = playerSprite.y + yOffset;
     this.showCounter++;
     if (this.showCounter > regenSpeed) {

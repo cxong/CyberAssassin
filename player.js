@@ -50,12 +50,20 @@ var Player = function(game, gravity, chipsGroup) {
   this.speed = 0;
   
   this.sprite = game.add.sprite(32, 150, 'player');
+  this.sprite.anchor.x = 0.5;
+  this.sprite.body.width -= 28;
+  this.sprite.body.x += 14;
   //  Player physics properties
   this.sprite.body.gravity.y = gravity;
   this.sprite.body.collideWorldBounds = true;
-  //  Our two animations, walking left and right.
-  this.sprite.animations.add('left', [0, 1, 2, 3], 10, true);
-  this.sprite.animations.add('right', [5, 6, 7, 8], 10, true);
+  // Animations
+  this.sprite.animations.add('left', [8 - 1, 8 - 2, 8 - 3, 8 - 4, 8 - 5, 8 - 6], 15, true);
+  this.sprite.animations.add('right', [9 + 1, 9 + 2, 9 + 3, 9 + 4, 9 + 5, 9 + 6], 15, true);
+  this.sprite.animations.add('jumpleft', [8 - 7, 8 - 8], 4, false);
+  this.sprite.animations.add('jumpright', [9 + 7, 9 + 8], 4, false);
+  var scrapeFrame = { left: 9 + 8, right: 8 - 8 };
+  this.sprite.animations.add('standleft', [8], 10, false);
+  this.sprite.animations.add('standright', [9], 10, false);
   this.touchState = {};
   
   // (h)orizontal, (v)ertical or (c)limbing
@@ -101,7 +109,7 @@ var Player = function(game, gravity, chipsGroup) {
 
       // sliding against building
       this.sprite.animations.stop();
-      this.sprite.frame = 4;
+      this.sprite.frame = scrapeFrame[this.lastDir];
       this.sprite.body.velocity.y = Math.min(this.sprite.body.velocity.y, maxSlideVel);
       
       // Allow player to do two moves when touching a wall:
@@ -111,7 +119,7 @@ var Player = function(game, gravity, chipsGroup) {
         if (cursors.right.isDown) {
           this.sprite.body.velocity.x = pushForce;
           this.sprite.body.velocity.y += pushJumpMultiplier * gravity;
-          this.sprite.animations.play('right');
+          this.sprite.animations.play('jumpright');
           this.touchState.left = false;
           this.lastDir = 'right';
           pushSound.play();
@@ -123,7 +131,7 @@ var Player = function(game, gravity, chipsGroup) {
         if (cursors.left.isDown) {
           this.sprite.body.velocity.x = -pushForce;
           this.sprite.body.velocity.y += pushJumpMultiplier * gravity;
-          this.sprite.animations.play('left');
+          this.sprite.animations.play('jumpleft');
           this.touchState.right = false;
           this.lastDir = 'left';
           pushSound.play();
@@ -139,8 +147,8 @@ var Player = function(game, gravity, chipsGroup) {
 
       // Sparks
       if (scrapeSound.isPlaying) {
-        scrapeEmitter.x = this.sprite.x + (this.touchState.left ? 0 : this.sprite.width);
-        scrapeEmitter.y = this.sprite.y + this.sprite.height + 16;
+        scrapeEmitter.x = this.sprite.x + (this.touchState.left ? -this.sprite.body.width / 2 : this.sprite.body.width / 2);
+        scrapeEmitter.y = this.sprite.y + this.sprite.height / 2;
         scrapeEmitter.start(true, 300, null, 3);
         if (this.touchState.left) {
           scrapeEmitter.setXSpeed(0, 50.0);
@@ -174,8 +182,7 @@ var Player = function(game, gravity, chipsGroup) {
         move(this, 'right');
       } else {
         //  Stand still
-        this.sprite.animations.stop();
-        this.sprite.frame = 4;
+        this.sprite.animations.play('stand' + this.lastDir);
         // Slow down
         var sign = this.speed < 0 ? -1 : 1;
         if (Math.abs(this.speed) < decel) {
@@ -199,6 +206,7 @@ var Player = function(game, gravity, chipsGroup) {
       if (cursors.up.isDown) {
        this.sprite.body.velocity.y = this.sprite.body.gravity.y * jumpMultiplier;
        jumpSound.play();
+       this.sprite.animations.play('jump' + this.lastDir);
       }
     }
     
@@ -223,7 +231,7 @@ var Player = function(game, gravity, chipsGroup) {
   
   this.melee = function() {
     var pos = {
-      x: this.sprite.x + this.sprite.width / 2,
+      x: this.sprite.x,
       y: this.sprite.y + this.sprite.height / 2
     };
     if (this.lastDir === 'left') {
@@ -263,6 +271,7 @@ var Player = function(game, gravity, chipsGroup) {
     // Reduce health
     this.sprite.damage(1);
     this.healthIndicator.show(this.sprite);
+    this.sprite.animations.play('jump' + this.lastDir);
   };
   
   this.climbCounter = 0;
@@ -282,6 +291,7 @@ var Player = function(game, gravity, chipsGroup) {
     this.sprite.body.allowGravity = false;
     ledgeSound.play();
     this.climbJumpSoundPlayed = false;
+    this.sprite.animations.play('jump' + this.lastDir);
   };
   this.climb = function() {
     var distance = Phaser.Easing.Back.InOut(this.climbCounter / this.climbDuration);
