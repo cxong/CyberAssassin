@@ -39,6 +39,7 @@ var startText;
 
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
+  
   game.load.image('building', 'images/building.png');
   game.load.image('chip', 'images/chip.png');
   
@@ -88,7 +89,6 @@ function preload () {
 
 function create () {
   bgSprite = game.add.sprite(0, 0, 'bgimage');
-  bgSprite.scale.setTo(3, 3);
   
   music = game.add.audio('bgaudio');
   music.play('', 0, 0.4, true);
@@ -259,8 +259,8 @@ function update() {
   game.physics.overlap(player.sprite, groups.exit, winGame);
 
   // Parallax
-  bgSprite.x = game.camera.x * 0.9;
-  bgSprite.y = game.camera.y * 0.97;
+  bgSprite.x = game.camera.x * 0.95;
+  bgSprite.y = game.camera.y * 0.95;
 }
 
 function overlapRoom(playerSprite, room) {
