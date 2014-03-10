@@ -1,5 +1,5 @@
 var windowWidth = 8;
-var levelHeight = 100;
+var levelHeight = 128;
 
 var Window = function(game, x, y, h, glassGroup) {
   this.sprite = game.add.tileSprite(x, y, windowWidth, h, 'glass');
@@ -196,7 +196,7 @@ var Buildings = function(game, groundY, groups, enemies) {
     var gameWidth = 0;
     for (var i = 0; i < numBuildings; i++) {
       var width = 400;
-      var height = Math.round(groundY - 250);
+      var height = Math.round(groundY - 400);
       // Place one chip in each building, such that:
       // - the chips are roughly evenly spaced apart in height
       // - the first chip is in the rightmost building

@@ -1,7 +1,7 @@
 var game = new Phaser.Game(800, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 var gravity = 20; // default, no-air-resistance gravity
-var groundY = 15600;
-var numBuildings = 4;
+var groundY = 8500;
+var numBuildings = 3;
 var camera;
 var bgSprite;
 var player;
@@ -28,11 +28,14 @@ var glassEmitter;
 var muteKey;
 
 var resetTimer = 0;
-var timerStart = 3000;
+var timerStart = 2500;
 var timer = timerStart;
 var timerText;
 
+var started = false;
 var completed = false;
+var completeTimer = 0;
+var startText;
 
 function preload () {
   game.load.image('bgimage', 'images/bg.jpg');
@@ -129,10 +132,36 @@ function create () {
   camera = new Camera(game, player);
   
   makeText();
+  
+  // Starting text
+  var text = "Left/right: run" + 
+    "\nUp: jump" +
+    "\nZ: attack" +
+    "\n\nPress Z to start";
+  var style = { font: "48px Arial", fill: "#ffffff", align: "center" };
+  startText = game.add.text(game.camera.x + game.width / 2, game.camera.y + game.height / 2, text, style);
+  startText.anchor.setTo(0.5, 0.5);
+  groups.screen.add(startText);
+  player.freeze();
 }
 
 function update() {
+  if (!started) {
+    // Wait awhile, then start with Z
+    completeTimer++;
+    if (completeTimer > 60 && game.input.keyboard.isDown(Phaser.Keyboard.Z)) {
+      started = true;
+      startText.destroy();
+      player.sprite.body.allowGravity = true;
+    }
+    return;
+  }
   if (completed) {
+    // Wait awhile, then Reset with Z
+    completeTimer++;
+    if (completeTimer > 60 && game.input.keyboard.isDown(Phaser.Keyboard.Z)) {
+      reset();
+    }
     return;
   }
   if (!player.sprite.alive) {
@@ -336,6 +365,8 @@ function reset() {
   makeText();
   groups.screen.removeAll();
   numCollected = 0;
+  completed = false;
+  completeTimer = 0;
 }
 
 function makeText() {
@@ -354,14 +385,16 @@ function winGame() {
   player.freeze();
   
   var style = { font: "48px Arial", fill: "#ffffff", align: "center" };
-  var score = Math.floor(timer * (1 + numCollected * 0.2));
+  var score = Math.floor(timer * (1 + numCollected));
   if (score > getHighScore) {
     setHighScore(score);
   }
   var text = "Time: " + timer +
     "\nChips: " + numCollected +
     "\nTotal: " + score +
-    "\nHigh: " + getHighScore();
+    "\nHigh: " + getHighScore() +
+    "\n\nPress Z to restart";
+  timerText.destroy();
   timerText = game.add.text(game.camera.x + game.width / 2, game.camera.y + game.height / 2, text, style);
   timerText.anchor.setTo(0.5, 0.5);
   groups.screen.add(timerText);
