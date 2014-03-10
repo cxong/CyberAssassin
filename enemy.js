@@ -1,6 +1,7 @@
+var numEnemyPics = 3;
 var Enemy = function(game, x, y) {
   var dieSound = game.add.audio('explode');
-  this.sprite = game.add.sprite(x, y, 'enemy');
+  this.sprite = game.add.sprite(x, y, 'enemy' + Math.floor(Math.random() * numEnemyPics));
   // Offset sprite position so that its anchor point is the middle of its feet
   this.sprite.anchor.setTo(0.5, 1);
   
