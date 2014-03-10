@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2014 Cong
+Copyright (c) 2014 Cong Xu
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
@@ -18,3 +18,42 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Images:
+arrow.png: 141 Military Icons Set by AngryMeteor.com, CC-BY 3.0, http://opengameart.org/content/141-military-icons-set
+bg.jpg: Skyline - New York City, New York at night by Trodel, CC-BY-SA 2.0, http://www.fotopedia.com/items/flickr-3599402248
+building.png: Basic 32x32 sci-fi tiles for roguelike by Stephen Challener (Redshrike), Daniel Cook, CC-BY 3.0, http://opengameart.org/content/basic-32x32-sci-fi-tiles-for-roguelike
+bullet.png: Bullet Collection 1 (M484) by Master484 http://m484games.ucoz.com/, CC0, http://opengameart.org/content/bullet-collection-1-m484
+ceiling.png: Basic 32x32 sci-fi tiles for roguelike by Stephen Challener (Redshrike), Daniel Cook, CC-BY 3.0, http://opengameart.org/content/basic-32x32-sci-fi-tiles-for-roguelike
+chip.png: Various inventory 24 pixel icon set by OceansDream, CC-BY 3.0 / CC-BY-SA 3.0, http://opengameart.org/content/various-inventory-24-pixel-icon-set
+door.png: scifi door by devnewton, CC-BY-SA 3.0, http://opengameart.org/content/scifi-door
+enemy_die.png: Explosion Set 1 (M484 Games) by Master484 http://m484games.ucoz.com/, CC0, http://opengameart.org/content/explosion-set-1-m484-games
+enemy0.png, enemy1.png, enemy2.png: 2X UPDATED 32x32 Scifi Roguelike Enemies by Stephen Challener (Redshrike), CC-BY 3.0, http://opengameart.org/content/32x32-scifi-roguelike-enemies
+floor.png: Basic 32x32 sci-fi tiles for roguelike by Stephen Challener (Redshrike), Daniel Cook, CC-BY 3.0, http://opengameart.org/content/basic-32x32-sci-fi-tiles-for-roguelike
+grate0.png: Weathered Metal Grates by leeor_net, CC-BY 3.0, http://opengameart.org/content/weathered-metal-grates
+grate1.png: air duct grate texture by para, CC0, http://opengameart.org/content/air-duct-grate-texture
+melee.png: Explosion Set 1 (M484 Games) by Master484 http://m484games.ucoz.com/, CC0, http://opengameart.org/content/explosion-set-1-m484-games
+player_die.png: Explosion Set 1 (M484 Games) by Master484 http://m484games.ucoz.com/, CC0, http://opengameart.org/content/explosion-set-1-m484-games
+score.png: Window - Frame by Shadow3097, CC0, http://opengameart.org/content/window-frame
+start.png: Window - Frame by Shadow3097, CC0, http://opengameart.org/content/window-frame
+           FREE Keyboard and controllers prompts pack by xelu, CC0, http://opengameart.org/content/free-keyboard-and-controllers-prompts-pack
+
+Sounds:
+alarm_0.ogg: Short alarm by yd, CC0, http://opengameart.org/content/short-alarm
+bg.ogg: Space Dimensions (Techno Version) by Matthew Pablo www.matthewpablo.com, CC-BY 3.0, http://opengameart.org/content/space-dimensions-techno-version
+boom.ogg: Atari Booms by dklon, CC-BY 3.0, http://opengameart.org/content/atari-booms
+clang.ogg: Metal Clang1.aif by timgormly, CC-BY 3.0, http://freesound.org/people/timgormly/sounds/170958/
+collect.ogg: Atmospheric Interaction Sound Pack by legoluft, CC0, http://opengameart.org/content/atmospheric-interaction-sound-pack
+exit.ogg: 9 sci-fi computer sounds and beeps by Michel Baradari, CC-BY 3.0, http://opengameart.org/content/9-sci-fi-computer-sounds-and-beeps
+explode.ogg: Platformer Sounds: Terminal, Interaction, Door, Shots, Bang and Footsteps by yd, CC0, http://opengameart.org/content/platformer-sounds-terminal-interaction-door-shots-bang-and-footsteps
+glass.ogg: Breaking Glass by ngruber, CC0, http://freesound.org/people/ngruber/sounds/204777/
+jump.ogg: Jet_Whoosh.WAV by Benboncan, CC-BY 3.0, http://freesound.org/people/Benboncan/sounds/167563/
+landing.ogg: Platformer Sounds: Terminal, Interaction, Door, Shots, Bang and Footsteps by yd, CC0, http://opengameart.org/content/platformer-sounds-terminal-interaction-door-shots-bang-and-footsteps
+laser.ogg: Laser_shooting_sx by teckpow, CC0, http://opengameart.org/content/lasershootingsx
+ledge2.ogg: Bone, Fall, Ledge Climbing, Impact (Yo Frankie!) by Blender Foundation, CC-BY 3.0, http://opengameart.org/content/bone-fall-ledge-climbing-impact-yo-frankie
+scrape.ogg: 31 pings and metal filing sounds by bart, CC0, http://opengameart.org/content/31-pings-and-metal-filing-sounds
+steps_platform.ogg: Platformer Sounds: Terminal, Interaction, Door, Shots, Bang and Footsteps by yd, CC0, http://opengameart.org/content/platformer-sounds-terminal-interaction-door-shots-bang-and-footsteps
+swish.ogg: Swipe Whoosh by qubodup, CC0, http://freesound.org/people/qubodup/sounds/60007/
+swoosh.ogg: RPG Sound Pack by artisticdude, CC0, http://opengameart.org/content/rpg-sound-pack
+
+All other assets by Cong Xu, CC0 2014
