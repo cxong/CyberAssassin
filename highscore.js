@@ -1,6 +1,6 @@
 var cookieName = "CyberAssassinHighScore";
-function setHighScore() {
-  document.cookie=cookieName + "=" + this.value +";expires=Thu, 18 Dec 2114 12:00:00 GMT;path=/;domain=" + document.location.hostname;
+function setHighScore(value) {
+  document.cookie=cookieName + "=" + value +";expires=Thu, 18 Dec 2114 12:00:00 GMT;path=/;domain=" + document.location.hostname;
 }
 
 function getHighScore() {
