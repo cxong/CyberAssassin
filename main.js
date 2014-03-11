@@ -389,7 +389,7 @@ function winGame() {
   scorebg.anchor.setTo(0.5, 0.5);
   groups.screen.add(scorebg);
   var score = Math.floor(timer * (1 + numCollected));
-  if (score > getHighScore) {
+  if (score > getHighScore()) {
     setHighScore(score);
   }
   var text = "   " + timer + "                              " + numCollected +
