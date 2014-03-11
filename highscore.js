@@ -8,7 +8,7 @@ function getHighScore() {
 	var hs = 0;
 	for (var i = 0;i < cookies.length; ++i) {
 		var cookie = {name:cookies[i].split("=")[0], value:cookies[i].split("=")[1]};
-		if (cookie.name == cookieName) {
+		if (cookie.name.trim() == cookieName) {
 			hs = cookie.value;
 		}
 	}
