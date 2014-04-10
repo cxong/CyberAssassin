@@ -1,6 +1,8 @@
 CyberAssassin
 =============
 
-A game made for Cyberpunk Game Jam 2014
+A game made for [Cyberpunk Game Jam 2014](itch.io/jam/cyberpunk-jam)
 
-Play it online: http://congusbongus.itch.io/cyber-assassin
+![](https://raw.githubusercontent.com/BlitsAndPieces/CyberAssassin/master/logo.gif)
+
+Play it online: [http://congusbongus.itch.io/cyber-assassin](http://congusbongus.itch.io/cyber-assassin)
